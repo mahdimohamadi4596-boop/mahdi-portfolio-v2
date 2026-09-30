@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahdi | Home</title>
+
+  <!-- فونت‌ها -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- استایل‌ها -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navbar با JS تزریق میشه -->
+  <div id="navbar-container"></div>
+
+  <main>
+  <!-- Hero Section -->
+    <!-- Hero Section -->
+  <section class="hero section">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <p class="hero-greeting hero-eyebrow">NEXRA / AI DEVELOPMENT</p>
+        <h1 class="hero-title">
+          <span class="hero-title-1" data-i18n="home.heroTitle1">Hi, I'm Mahdi.</span>
+          <span class="hero-title-2" data-i18n="home.heroTitle2">AI Developer &amp; Builder.</span>
+        </h1>
+        <p class="hero-intro" data-i18n="home.heroIntro">I build practical AI systems, intelligent assistants, and AI-powered products.</p>
+        <div class="hero-actions">
+          <a href="projects.html" class="btn btn-primary" data-i18n="home.ctaProjects">View Projects</a>
+          <a href="about.html" class="btn btn-outline" data-i18n="home.ctaAbout">About Me</a>
+        </div>
+        <div class="hero-tags">
+          <span class="skill-chip">Machine Learning</span>
+          <span class="skill-chip">javaScript</span>
+          <span class="skill-chip">AI Agents</span>
+          <span class="skill-chip">FastAPI</span>
+          <span class="skill-chip">Python</span>
+          <span class="skill-chip">LLM</span>
+          <span class="skill-chip">RAG</span>
+        </div>
+      </div>
+
+      <!-- AI System Card -->
+      <div class="system-card">
+        <div class="system-head"><span>NEXRA</span><span>AI SYSTEM</span></div>
+        <img class="system-logo" src="assets/icons/Logo-N.jpg" alt="NEXRA" onerror="this.style.display='none'">
+        <div class="system-flow">
+          <ul class="system-inputs">
+            <li>LLM</li>
+            <li>RAG</li>
+            <li>AGENTS</li>
+            <li>PYTHON</li>
+          </ul>
+          <span class="system-merge"></span>
+          <span class="system-output">→ PRODUCT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Preview -->
+  <section class="skills-preview section">
+    <div class="container">
+      <h2 class="section-title" data-i18n="home.skillsTitle">Core Skills</h2>
+      <div class="skills-grid">
+        <span class="skill-chip">Python</span>
+        <span class="skill-chip">LLMs</span>
+        <span class="skill-chip">AI Agents</span>
+        <span class="skill-chip">RAG</span>
+        <span class="skill-chip">FastAPI</span>
+        <span class="skill-chip">Machine Learning</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="projects-preview section">
+    <div class="container">
+      <h2 class="section-title" data-i18n="home.projectsTitle">Featured Projects</h2>
+      <div id="featured-projects" class="projects-grid"></div>
+      <div class="view-all-wrapper">
+        <a href="projects.html" class="btn btn-outline" data-i18n="home.viewAllProjects">View All Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section section">
+    <div class="container cta-inner">
+      <h2 data-i18n="home.ctaTitle">Let's build something together</h2>
+      <p data-i18n="home.ctaSubtitle">I'm open to new opportunities and collaborations.</p>
+      <a href="contact.html" class="btn btn-primary" data-i18n="home.ctaButton">Contact Me</a>
+    </div>
+  </section>
+  </main>
+
+  <!-- Footer با JS تزریق میشه -->
+  <div id="footer-container"></div>
+
+  <!-- ترتیب لود اسکریپت‌ها مهمه -->
+<script src="data/translations.js"></script>
+<script src="data/projects.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/language.js"></script>
+<script src="js/typing.js"></script>
+<script src="js/main.js"></script>
+<script src="js/background.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

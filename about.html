@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahdi | About</title>
+
+  <!-- فونت‌ها -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- استایل‌ها -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <main>
+    <!-- About Intro -->
+    <section class="about-hero section">
+      <div class="container about-hero-inner">
+        <div class="about-photo">
+          <img src="assets/images/profile.jpg" alt="Mahdi Mohammadi"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <span class="about-photo-fallback">M</span>
+        </div>
+        <div class="about-text">
+          <h1 class="about-title" data-i18n="about.pageTitle">About Me</h1>
+          <p data-i18n="about.intro1"></p>
+          <p data-i18n="about.intro2"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Path -->
+    <!-- 02 What I Build -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="about.buildTitle">What I Build</h2>
+        <div class="build-grid">
+          <div class="path-card">
+            <h3 data-i18n="about.build1Title">AI Assistants</h3>
+            <p data-i18n="about.build1Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.build2Title">LLM Applications</h3>
+            <p data-i18n="about.build2Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.build3Title">RAG Systems</h3>
+            <p data-i18n="about.build3Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.build4Title">AI Agents</h3>
+            <p data-i18n="about.build4Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.build5Title">Practical AI Products</h3>
+            <p data-i18n="about.build5Text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 My Approach -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="about.approachTitle">My Approach</h2>
+        <div class="flow">
+          <div class="path-card">
+            <h3 data-i18n="about.flow1Title">Problem</h3>
+            <p data-i18n="about.flow1Text"></p>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="path-card">
+            <h3 data-i18n="about.flow2Title">AI</h3>
+            <p data-i18n="about.flow2Text"></p>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="path-card">
+            <h3 data-i18n="about.flow3Title">Product</h3>
+            <p data-i18n="about.flow3Text"></p>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="path-card">
+            <h3 data-i18n="about.flow4Title">Real-world Use</h3>
+            <p data-i18n="about.flow4Text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 Learning Journey -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="about.pathTitle">Learning Journey</h2>
+        <div class="path-grid">
+          <div class="path-card">
+            <span class="path-number">01</span>
+            <h3 data-i18n="about.step1Title"></h3>
+            <p data-i18n="about.step1Text"></p>
+          </div>
+          <div class="path-card">
+            <span class="path-number">02</span>
+            <h3 data-i18n="about.step2Title"></h3>
+            <p data-i18n="about.step2Text"></p>
+          </div>
+          <div class="path-card">
+            <span class="path-number">03</span>
+            <h3 data-i18n="about.step3Title"></h3>
+            <p data-i18n="about.step3Text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 Journey Timeline -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="about.timelineTitle">Journey Timeline</h2>
+        <div id="timeline" class="timeline"></div>
+      </div>
+    </section>
+
+    <!-- 06 Currently Exploring -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="about.exploringTitle">Currently Exploring</h2>
+        <div class="path-grid">
+          <div class="path-card">
+            <h3 data-i18n="about.explore1Title"></h3>
+            <p data-i18n="about.explore1Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.explore2Title"></h3>
+            <p data-i18n="about.explore2Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.explore3Title"></h3>
+            <p data-i18n="about.explore3Text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 My Goal -->
+    <section class="section">
+      <div class="container">
+        <div class="goal-card">
+          <h2 data-i18n="about.goalTitle">My Goal</h2>
+          <p data-i18n="about.goalText"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 Beyond Code (اختیاری) -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="about.beyondTitle">Beyond Code</h2>
+        <div class="path-grid">
+          <div class="path-card">
+            <h3 data-i18n="about.beyond1Title"></h3>
+            <p data-i18n="about.beyond1Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.beyond2Title"></h3>
+            <p data-i18n="about.beyond2Text"></p>
+          </div>
+          <div class="path-card">
+            <h3 data-i18n="about.beyond3Title"></h3>
+            <p data-i18n="about.beyond3Text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="data/translations.js"></script>
+  <script src="js/theme.js"></script>;p
+  <script src="js/language.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/about.js"></script>
+</body>
+</html>
