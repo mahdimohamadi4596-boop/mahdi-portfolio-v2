@@ -38,7 +38,9 @@ const projects = [
       "assets/images/projects/lumi/1.jpg",
       "assets/images/projects/lumi/2.jpg",
       "assets/images/projects/lumi/3.jpg",
-      "assets/images/projects/lumi/4.jpg"
+      "assets/images/projects/lumi/4.jpg",
+      "assets/images/projects/lumi/5.jpg",
+      "assets/images/projects/lumi/6.jpg"
     ],
     github: "",
     demo: ""
