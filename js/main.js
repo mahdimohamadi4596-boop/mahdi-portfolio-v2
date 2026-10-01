@@ -10,7 +10,10 @@ function renderNavbar() {
   nav.innerHTML = `
     <nav class="navbar">
       <div class="navbar-inner">
-        <a href="index.html" class="navbar-logo">Mahdi</a>
+        <a href="index.html" class="navbar-logo">
+          <img class="brand-mark" src="assets/icons/Logo-N.jpg" alt="N" onerror="this.style.display='none'">
+          <span>NEXRA</span>
+        </a>
         <div class="navbar-links" id="navbar-links">
           <a href="index.html" data-i18n="nav.home">Home</a>
           <a href="about.html" data-i18n="nav.about">About</a>
