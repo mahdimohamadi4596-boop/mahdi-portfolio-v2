@@ -326,15 +326,19 @@ body::after {
 }
 
 .icon-btn {
+  position: relative;
   width: 38px;
   height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  border: 1px solid transparent;
+  border-radius: 8px;
   color: var(--text-secondary);
-  transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
 }
 
 .icon-btn:hover {
@@ -1818,9 +1822,18 @@ body::after {
 /* دکمه همبرگری فقط تو موبایل دیده میشه (پیش‌فرض دسکتاپ مخفی) */
 .menu-toggle { display: none; }
 
-.menu-toggle .icon-close { display: none; }
-.menu-toggle.active .icon-burger { display: none; }
-.menu-toggle.active .icon-close { display: block; }
+.menu-toggle svg {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  position: absolute;
+}
+
+.menu-toggle .icon-burger { opacity: 1; transform: rotate(0deg); }
+.menu-toggle .icon-close { opacity: 0; transform: rotate(-90deg); position: absolute; }
+
+.menu-toggle.active .icon-burger { opacity: 0; transform: rotate(90deg); }
+.menu-toggle.active .icon-close { opacity: 1; transform: rotate(0deg); }
+
+.menu-toggle:active { transform: scale(0.9); }
 
 @media (max-width: 768px) {
   .menu-toggle { display: flex; }
@@ -1834,29 +1847,92 @@ body::after {
     gap: 4px;
     padding: 12px;
     background: rgba(var(--bg-card-rgb), 0.92);
-    backdrop-filter: blur(18px) saturate(150%);
-    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(0px) saturate(150%);
+    -webkit-backdrop-filter: blur(0px) saturate(150%);
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
-    transform: translateY(-8px);
+    clip-path: inset(0 0 100% 0 round 0 0 16px 16px);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s;
+    transition: clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.2s ease,
+                backdrop-filter 0.4s ease,
+                visibility 0.45s;
   }
 
   .navbar-links.open {
-    transform: translateY(0);
+    clip-path: inset(0 0 0% 0 round 0 0 16px 16px);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
 
   .navbar-links a {
-    padding: 14px 16px;
+    position: relative;
+    padding: 14px 16px 14px 24px;
     border-radius: 10px;
     font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
+
+  /* خط اکسنت کوچیک کنار لینک، فقط موقع hover/active نمایان میشه */
+  .navbar-links a::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 8px;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 16px;
+    border-radius: 3px;
+    background: var(--accent-gradient);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .navbar-links a:hover,
+  .navbar-links a.active {
+    background-color: rgba(var(--accent-rgb), 0.08);
+    color: var(--accent);
+  }
+
+  .navbar-links a:hover::before,
+  .navbar-links a.active::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .navbar-links a:active {
+    transform: scale(0.98);
+  }
+
+  /* هر لینک با تاخیر کمی بیشتر از قبلی ظاهر میشه (Stagger) */
+  .navbar-links.open a {
+    animation: navItemIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .navbar-links.open a:nth-child(1) { animation-delay: 0.1s; }
+  .navbar-links.open a:nth-child(2) { animation-delay: 0.16s; }
+  .navbar-links.open a:nth-child(3) { animation-delay: 0.22s; }
+  .navbar-links.open a:nth-child(4) { animation-delay: 0.28s; }
+  .navbar-links.open a:nth-child(5) { animation-delay: 0.34s; }
+  .navbar-links.open a:nth-child(6) { animation-delay: 0.4s; }
+
+  @keyframes navItemIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .navbar-links:not(.open) a {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .navbar-links, .navbar-links a, .navbar-links a::before {
+      transition: none; animation: none; opacity: 1; transform: none;
 
   .navbar-links a:hover,
   .navbar-links a.active {
