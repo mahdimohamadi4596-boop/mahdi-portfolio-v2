@@ -27,3 +27,51 @@ function renderFeaturedProjects() {
 document.addEventListener("DOMContentLoaded", renderFeaturedProjects);
 // وقتی زبان عوض شد، دوباره رندر کن تا description به زبان جدید نشون داده بشه
 document.addEventListener("languagechange", renderFeaturedProjects);
+
+// ==========================================================================
+// دکمه شناور ایده‌ها: بعد از کمی اسکرول ظاهر میشه (نمایشش فقط در موبایل با CSS کنترل میشه)
+// ==========================================================================
+function initIdeaFab() {
+  const fab = document.getElementById("idea-fab");
+  const closeBtn = document.getElementById("idea-fab-close");
+  if (!fab) return;
+
+  let idleTimer = null;
+  let introShown = false;
+
+  const hideFab = () => fab.classList.remove("show");
+
+  const handleScroll = () => {
+    clearTimeout(idleTimer);
+
+    if (window.scrollY <= 200) {
+      hideFab();
+      return;
+    }
+
+    // برچسب "Ideas" فقط بار اول نمایش داده میشه
+    if (!introShown) {
+      fab.classList.add("intro");
+      introShown = true;
+    }
+
+    fab.classList.add("show");
+    // اگه کاربر ۵ ثانیه اسکرول نکرد، دکمه ناپدید میشه تا اسکرول بعدی
+    idleTimer = setTimeout(hideFab, 5000);
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+
+  // کلیک روی ضربدر = حذف دکمه تا رفرش صفحه یا باز کردن مجدد برنامه
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(idleTimer);
+      fab.remove();
+      closeBtn.remove();
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initIdeaFab);

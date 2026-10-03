@@ -92,9 +92,21 @@
     text-align: center;
   }
 
-  .hero-actions,
-  .hero-tags {
+  .hero-actions {
     justify-content: center;
+  }
+
+  .hero-tags {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .hero-tags .skill-chip {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
   }
 
   .hero-intro {
@@ -108,6 +120,16 @@
   }
 }
 @media (max-width: 768px) {
+  /* 1. مخفی کردن "سلام من مهدی‌ام" در موبایل */
+  .hero-title-1 {
+    display: none;
+  }
+
+  /* 2. حذف کامل کارت لوگو/سیستم در موبایل */
+  .system-card {
+    display: none;
+  }
+
   .page-head,
   .pd-hero { padding-top: 100px; }
 
@@ -143,4 +165,187 @@
   .services-grid,
   .collab-grid { grid-template-columns: 1fr; }
   .action-item { flex-wrap: wrap; }
+}
+
+/* ==========================================================================
+   دکمه شناور ایده‌ها — فقط موبایل، فقط صفحه Home (دسکتاپ: مخفی)
+   ========================================================================== */
+.idea-fab,
+.idea-fab-close {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .idea-fab {
+    position: fixed;
+    left: 18px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    z-index: 999;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 55%),
+      var(--accent-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+      0 12px 30px -8px rgba(var(--blue-rgb), 0.8),
+      0 0 26px rgba(var(--cyan-rgb), 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      inset 0 -6px 12px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(28px) scale(0.7);
+    pointer-events: none;
+    transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* لامپ با نور گرم */
+  .idea-fab svg {
+    width: 24px;
+    height: 24px;
+    fill: rgba(255, 240, 170, 0.35);
+    filter: drop-shadow(0 0 6px rgba(255, 236, 150, 0.9));
+  }
+
+  .idea-fab.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    animation: ideaFabFloat 3.2s ease-in-out 0.6s infinite;
+  }
+
+  .idea-fab.show svg {
+    animation: ideaBulbGlow 2.4s ease-in-out infinite alternate;
+  }
+
+  .idea-fab.show:active {
+    transform: scale(0.92);
+  }
+
+  /* دو حلقه پالس پشت‌سرهم */
+  .idea-fab.show::before,
+  .idea-fab.show::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    border: 2px solid rgba(var(--accent-rgb), 0.55);
+    animation: ideaFabPulse 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+
+  .idea-fab.show::after {
+    animation-delay: 1.2s;
+  }
+
+  /* برچسب شیشه‌ای کنار دکمه: چند ثانیه نشون داده میشه و محو میشه */
+  .idea-fab-label {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translate(-8px, -50%);
+    pointer-events: none;
+  }
+
+  .idea-fab.show.intro .idea-fab-label {
+    animation: ideaFabLabel 4.5s ease 1s forwards;
+  }
+
+  /* دکمه بستن (×) روی گوشه دکمه شناور */
+  .idea-fab-close {
+    position: fixed;
+    left: 51px;
+    bottom: calc(53px + env(safe-area-inset-bottom, 0px));
+    z-index: 1000;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-strong);
+    opacity: 0;
+    transform: scale(0.6);
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease) 0.2s, transform 0.4s var(--ease) 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .idea-fab-close svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* افزایش ناحیه لمس برای انگشت */
+  .idea-fab-close::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+  }
+
+  .idea-fab.show + .idea-fab-close {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    animation: ideaFabFloat 3.2s ease-in-out 0.6s infinite;
+  }
+
+  @keyframes ideaFabFloat {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -5px; }
+  }
+
+  @keyframes ideaBulbGlow {
+    from {
+      fill: rgba(255, 240, 170, 0.25);
+      filter: drop-shadow(0 0 3px rgba(255, 236, 150, 0.6));
+    }
+    to {
+      fill: rgba(255, 240, 170, 0.6);
+      filter: drop-shadow(0 0 9px rgba(255, 236, 150, 1));
+    }
+  }
+
+  @keyframes ideaFabPulse {
+    0%   { transform: scale(1);   opacity: 0.8; }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
+
+  @keyframes ideaFabLabel {
+    0%   { opacity: 0; transform: translate(-8px, -50%); }
+    12%  { opacity: 1; transform: translate(0, -50%); }
+    80%  { opacity: 1; transform: translate(0, -50%); }
+    100% { opacity: 0; transform: translate(-8px, -50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .idea-fab,
+    .idea-fab.show,
+    .idea-fab.show svg,
+    .idea-fab.show + .idea-fab-close { animation: none; transition: none; }
+    .idea-fab.show::before,
+    .idea-fab.show::after { animation: none; display: none; }
+    .idea-fab.show.intro .idea-fab-label { animation: none; opacity: 1; transform: translate(0, -50%); }
+  }
 }
