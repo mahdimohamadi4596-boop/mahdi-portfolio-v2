@@ -93,6 +93,7 @@ function renderProjectDetails() {
     root.innerHTML = `<div class="pd-glass container">${hero + overviewHtml + psHtml + featuresHtml + stackHtml + archHtml + galleryHtml + codeHtml}</div>`;
 
   initCarousel();
+  initLightbox(gallery, p.name);
   if (hasCode) initCode(p, ui);
 }
 
@@ -121,6 +122,100 @@ function initCarousel() {
   if (next) next.onclick = () => go(Math.min(total - 1, index() + 1));
   update();
 }
+
+// Lightbox گالری: نمایش تمام‌صفحه عکس با Swipe، کیبورد و دکمه‌ها
+const lb = { images: [], name: "", index: 0, box: null, startX: 0 };
+
+function buildLightbox() {
+  if (lb.box) return;
+
+  const box = document.createElement("div");
+  box.className = "lightbox";
+  box.setAttribute("role", "dialog");
+  box.setAttribute("aria-modal", "true");
+  box.innerHTML = `
+    <div class="lb-backdrop"></div>
+    <div class="lb-top">
+      <span class="lb-count"></span>
+      <button class="lb-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <button class="lb-nav lb-prev" aria-label="Previous">‹</button>
+    <div class="lb-stage"><img class="lb-img" alt="" draggable="false"></div>
+    <button class="lb-nav lb-next" aria-label="Next">›</button>
+    <div class="lb-caption"></div>`;
+  document.body.appendChild(box);
+  lb.box = box;
+
+  box.querySelector(".lb-close").onclick = lbClose;
+  box.querySelector(".lb-backdrop").onclick = lbClose;
+  box.querySelector(".lb-prev").onclick = () => lbShow(lb.index - 1);
+  box.querySelector(".lb-next").onclick = () => lbShow(lb.index + 1);
+
+  // کلیک روی فضای خالی دور عکس = بستن
+  box.querySelector(".lb-stage").onclick = e => { if (e.target.tagName !== "IMG") lbClose(); };
+
+  // Swipe در موبایل
+  const stage = box.querySelector(".lb-stage");
+  stage.addEventListener("touchstart", e => { lb.startX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - lb.startX;
+    if (Math.abs(dx) > 50 && lb.images.length > 1) lbShow(lb.index + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  // کیبورد: Esc و فلش‌ها
+  document.addEventListener("keydown", e => {
+    if (!box.classList.contains("open")) return;
+    if (e.key === "Escape") lbClose();
+    if (lb.images.length > 1 && e.key === "ArrowRight") lbShow(lb.index + 1);
+    if (lb.images.length > 1 && e.key === "ArrowLeft") lbShow(lb.index - 1);
+  });
+}
+
+function lbShow(i) {
+  const n = lb.images.length;
+  lb.index = (i + n) % n;
+
+  const img = lb.box.querySelector(".lb-img");
+  img.classList.add("loading");
+  img.onload = () => img.classList.remove("loading");
+  img.src = lb.images[lb.index];
+  if (img.complete) img.classList.remove("loading");
+  img.alt = `${lb.name} ${lb.index + 1}`;
+
+  lb.box.querySelector(".lb-count").textContent = `${lb.index + 1} / ${n}`;
+  lb.box.querySelector(".lb-caption").textContent = lb.name;
+  lb.box.classList.toggle("single", n < 2);
+
+  // پیش‌لود عکس قبلی و بعدی
+  [lb.index + 1, lb.index - 1].forEach(k => { new Image().src = lb.images[(k + n) % n]; });
+}
+
+function lbOpen(i) {
+  lbShow(i);
+  lb.box.classList.add("open");
+  document.body.classList.add("lb-open");
+  lb.box.querySelector(".lb-close").focus({ preventScroll: true });
+}
+
+function lbClose() {
+  lb.box.classList.remove("open");
+  document.body.classList.remove("lb-open");
+}
+
+function initLightbox(gallery, name) {
+  const track = document.getElementById("g-track");
+  if (!track || !gallery.length) return;
+
+  buildLightbox();
+  lb.images = gallery;
+  lb.name = name;
+
+  [...track.children].forEach((slide, i) => slide.addEventListener("click", () => lbOpen(i)));
+}
+
+// Code Showcase: چند خط اول + دکمه More/Less + Copy
 
 // Code Showcase: چند خط اول + دکمه More/Less + Copy
 function initCode(p, ui) {

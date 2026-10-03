@@ -158,6 +158,11 @@
 
   .g-btn { display: none; } /* در موبایل با Swipe */
 
+  /* Lightbox: در موبایل با Swipe، بدون فلش */
+  .lb-nav { display: none; }
+  .lb-stage { padding: 0 10px; }
+  .lb-img { max-width: 94vw; max-height: 76vh; border-radius: 12px; }
+
   /* Skills */
   .expertise-grid { grid-template-columns: 1fr; }
   .expertise-primary { padding: 28px; }
