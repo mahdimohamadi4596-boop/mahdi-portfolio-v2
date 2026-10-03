@@ -28,16 +28,99 @@
   /* About */
   .about-hero {
     padding-top: 100px;
+    padding-bottom: 32px;
   }
 
   .about-hero-inner {
-    grid-template-columns: 1fr;
-    text-align: center;
-    justify-items: center;
+    grid-template-columns: 104px 1fr;
+    gap: 20px 18px;
+    align-items: center;
+  }
+
+  /* تیتر بیاد کنار عکس (بدون تغییر HTML) */
+  .about-text {
+    display: contents;
   }
 
   .about-photo {
-    width: 240px;
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    width: 104px;
+    padding: 4px;
+    border-radius: 18px;
+    overflow: visible;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .about-photo:active {
+    transform: scale(0.96);
+  }
+
+  /* نقطه‌ی نبض‌دار گوشه‌ی عکس */
+  .about-photo::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    inset-inline-end: -4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    border: 3px solid var(--bg-primary);
+  }
+
+  .about-photo img,
+  .about-photo-fallback {
+    border-radius: 14px;
+  }
+
+  .about-photo-fallback {
+    font-size: 2.4rem;
+  }
+
+  .about-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 1.9rem;
+    margin: 0;
+  }
+
+  .about-title::after {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background: var(--accent-gradient);
+  }
+
+  .about-text p {
+    grid-column: 1 / -1;
+    text-align: start;
+    margin: 0;
+  }
+
+  /* پاراگراف اول: جمله‌ی اصلی */
+  .about-text p:first-of-type {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    line-height: 1.9;
+  }
+
+  /* پاراگراف دوم: کارت شیشه‌ای با خط accent */
+  .about-text p:last-of-type {
+    font-size: 0.98rem;
+    line-height: 1.9;
+    padding: 16px 18px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-inline-start: 3px solid var(--accent);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 0 var(--card-highlight);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
 
   .path-grid {
@@ -352,5 +435,44 @@
     .idea-fab.show::before,
     .idea-fab.show::after { animation: none; display: none; }
     .idea-fab.show.intro .idea-fab-label { animation: none; opacity: 1; transform: translate(0, -50%); }
+  }
+}
+@media (max-width: 380px) {
+  .about-hero-inner {
+    grid-template-columns: 88px 1fr;
+    gap: 16px 14px;
+  }
+
+  .about-photo {
+    width: 88px;
+  }
+
+  .about-title {
+    font-size: 1.6rem;
+  }
+}
+/* About (موبایل): ورود پلکانی و نبض نقطه‌ی عکس */
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .about-photo,
+  .about-title,
+  .about-text p:first-of-type,
+  .about-text p:last-of-type {
+    animation: fadeInUp 0.6s var(--ease) both;
+  }
+
+  .about-title {
+    animation-delay: 0.08s;
+  }
+
+  .about-text p:first-of-type {
+    animation-delay: 0.16s;
+  }
+
+  .about-text p:last-of-type {
+    animation-delay: 0.24s;
+  }
+
+  .about-photo::after {
+    animation: aboutDotPulse 2.4s ease-out infinite;
   }
 }
