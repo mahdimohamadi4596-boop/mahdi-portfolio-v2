@@ -476,3 +476,31 @@
     animation: aboutDotPulse 2.4s ease-out infinite;
   }
 }
+/* Share در موبایل: کوچک‌تر و هم‌تراز با padding کوچک‌تر کارت */
+@media (max-width: 768px) {
+  .idea-share {
+    top: 33px;
+    inset-inline-end: 20px;
+  }
+
+  .idea-share-btn {
+    padding: 6px 12px;
+    gap: 6px;
+    font-size: 0.8rem;
+  }
+
+  .idea-share-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .idea-share-menu {
+    min-width: 200px;
+    padding: 6px;
+  }
+
+  .idea-share-item {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}

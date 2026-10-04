@@ -204,6 +204,6 @@ const ideas = [
 ];
 
 const ideasUI = {
-  en: { pageTitle: "Ideas", pageSubtitle: "Thoughts, technical notes, and perspectives on AI and technology.", readMore: "Read More", back: "All Ideas", notFound: "This idea wasn't found." },
-  fa: { pageTitle: "ایده‌ها", pageSubtitle: "دیدگاه‌ها، یادداشت‌های فنی و تحلیل‌های من درباره هوش مصنوعی و تکنولوژی.", readMore: "بیشتر بخوانید", back: "همه ایده‌ها", notFound: "این ایده پیدا نشد." }
+    en: { pageTitle: "Ideas", pageSubtitle: "Thoughts, technical notes, and perspectives on AI and technology.", readMore: "Read More", back: "All Ideas", notFound: "This idea wasn't found.", share: "Share", shareTelegram: "Telegram", shareCopy: "Copy Link", shareNative: "More options…", copied: "Link copied" },
+      fa: { pageTitle: "ایده‌ها", pageSubtitle: "دیدگاه‌ها، یادداشت‌های فنی و تحلیل‌های من درباره هوش مصنوعی و تکنولوژی.", readMore: "بیشتر بخوانید", back: "همه ایده‌ها", notFound: "این ایده پیدا نشد.", share: "اشتراک‌گذاری", shareTelegram: "تلگرام", shareCopy: "کپی لینک", shareNative: "گزینه‌های بیشتر…", copied: "لینک کپی شد" }
 };

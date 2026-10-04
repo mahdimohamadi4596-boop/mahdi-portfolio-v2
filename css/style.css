@@ -1745,6 +1745,75 @@ body.lb-open { overflow: hidden; }
 .idea-title { font-size: clamp(1.8rem, 5vw, 2.6rem); }
 .idea-cover { margin-top: 24px; }
 
+/* Share: دکمه + منوی شیشه‌ای */
+/* دکمه Share: گوشه‌ی بالای کارت، هم‌ردیف لینک برگشت (فارسی: چپ، انگلیسی: راست) */
+.idea-article { position: relative; }
+.idea-share {
+  position: absolute;
+  top: 33px;
+  inset-inline-end: 32px;
+  z-index: 5;
+}
+.idea-share-btn { padding: 10px 20px; font-size: 0.9rem; }
+.idea-share-btn svg { width: 18px; height: 18px; }
+
+.idea-share-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  inset-inline-end: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 220px;
+  max-width: calc(100vw - 72px);
+  padding: 8px;
+  background: rgba(var(--bg-card-rgb), 0.92);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top;
+  transition: opacity 0.2s ease, transform 0.25s var(--ease), visibility 0.25s;
+}
+
+.idea-share.open .idea-share-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+
+.idea-share-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: start;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.idea-share-item svg { width: 18px; height: 18px; flex: none; }
+
+.idea-share-item:hover,
+.idea-share-item:focus-visible {
+  background-color: rgba(var(--accent-rgb), 0.08);
+  color: var(--accent);
+  outline: none;
+}
+
+.idea-share-item.copied { color: #22c55e; }
+
 .idea-h2 { font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; }
 .idea-body > .idea-h2:first-child { margin-top: 0; }
 .idea-p { color: var(--text-secondary); line-height: 2; font-size: 1.02rem; margin-bottom: 4px; }
