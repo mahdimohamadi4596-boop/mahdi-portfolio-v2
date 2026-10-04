@@ -1,6 +1,36 @@
 // ==========================================================================
 // صفحه جزئیات Idea: مشترک و Dynamic — idea.html?id=xyz
 // ==========================================================================
+// تبدیل بلوک‌ها به HTML. فیلد level اختیاریه:
+// "root" = تیتر اصلی درخت، "sub" = شاخه (با بلوک‌های بدون heading بعدش)
+// درخت با اولین بلوکی که heading دارد ولی level ندارد بسته می‌شود.
+function renderIdeaBlocks(blocks) {
+  let html = "";
+  let tree = false;
+  let branch = false;
+  const closeBranch = () => { if (branch) { html += "</div>"; branch = false; } };
+  const closeTree = () => { closeBranch(); if (tree) { html += "</div>"; tree = false; } };
+
+  blocks.forEach(b => {
+    if (b.level === "root") {
+      closeTree();
+      html += `<h2 class="idea-h2 idea-h2--root">${esc(b.heading)}</h2><div class="idea-tree">`;
+      tree = true;
+    } else if (b.level === "sub") {
+      closeBranch();
+      html += `<div class="idea-branch"><h2 class="idea-h2 idea-h2--sub">${esc(b.heading)}</h2>`;
+      branch = true;
+    } else if (b.heading) {
+      closeTree();
+      html += `<h2 class="idea-h2">${esc(b.heading)}</h2>`;
+    }
+    if (b.text) html += `<p class="idea-p">${esc(b.text)}</p>`;
+  });
+
+  closeTree();
+  return html;
+}
+
 function renderIdeaDetails() {
   const root = document.getElementById("idea-root");
   if (!root) return;
@@ -32,10 +62,7 @@ function renderIdeaDetails() {
       </section>
       <section class="pd-section">
         <div class="idea-body">
-          ${blocks.map(b => `
-            ${b.heading ? `<h2 class="idea-h2">${esc(b.heading)}</h2>` : ""}
-            <p class="idea-p">${esc(b.text)}</p>
-          `).join("")}
+          ${renderIdeaBlocks(blocks)}
         </div>
       </section>
     </article>`;

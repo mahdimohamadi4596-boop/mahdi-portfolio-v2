@@ -1748,6 +1748,96 @@ body.lb-open { overflow: hidden; }
 .idea-h2 { font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; }
 .idea-body > .idea-h2:first-child { margin-top: 0; }
 .idea-p { color: var(--text-secondary); line-height: 2; font-size: 1.02rem; margin-bottom: 4px; }
+
+/* درخت قابلیت‌ها: تیتر اصلی + تنه‌ی آبی محو + شاخه‌ها (فیلد level در data/ideas.js) */
+.idea-h2--root {
+  position: relative;
+  font-size: 1.65rem;
+  line-height: 1.4;
+  margin: 48px 0 0;
+  padding-bottom: 6px;
+  padding-inline-start: 26px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* گره‌ی درخشان کنار تیتر اصلی */
+.idea-h2--root::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(50% - 3px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: var(--accent);
+  box-shadow: 0 0 0 5px rgba(var(--accent-rgb), 0.14),
+              0 0 20px rgba(var(--accent-rgb), 0.6);
+}
+
+.idea-tree {
+  position: relative;
+  margin-inline-start: 4px;
+  padding-inline-start: 30px;
+  padding-bottom: 4px;
+}
+
+/* تنه‌ی آبی محو: از گره شروع میشه و به پایین کم‌رنگ میشه */
+.idea-tree::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: -24px;
+  bottom: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom,
+              rgba(var(--accent-rgb), 0.6),
+              rgba(var(--accent-rgb), 0.18) 65%,
+              transparent);
+}
+
+.idea-branch { position: relative; padding-bottom: 6px; }
+
+.idea-h2--sub {
+  position: relative;
+  font-size: 1.12rem;
+  line-height: 1.5;
+  margin: 26px 0 10px;
+}
+
+.idea-tree > .idea-branch:first-child .idea-h2--sub { margin-top: 14px; }
+
+/* خط افقی از تنه تا تیتر شاخه */
+.idea-h2--sub::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -30px;
+  top: 0.75em;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(var(--accent-rgb), 0.5);
+}
+
+/* گره‌ی کوچک سر شاخه */
+.idea-h2--sub::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: -14px;
+  top: 0.75em;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  transform: translateY(-3px);
+  background: var(--bg-primary);
+  border: 2px solid var(--accent);
+}
 /* صفحه جزئیات Idea داخل همون کادر شیشه‌ای مشترک با Project Details */
 .idea-article .pd-hero,
 .idea-article .pd-section { padding-left: 0; padding-right: 0; }
