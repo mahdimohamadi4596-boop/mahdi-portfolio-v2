@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/</loc></url>
-  <url><loc>https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/about.html</loc></url>
-  <url><loc>https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/projects.html</loc></url>
-  <url><loc>https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/skills.html</loc></url>
-  <url><loc>https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/ideas.html</loc></url>
-  <url><loc>https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/contact.html</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://mahdi-mohammadi.ir/</loc>
+    <image:image>
+      <image:loc>https://mahdi-mohammadi.ir/assets/images/mahdi-mohammadi-ai-developer.jpg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://mahdi-mohammadi.ir/about.html</loc>
+    <image:image>
+      <image:loc>https://mahdi-mohammadi.ir/assets/images/mahdi-mohammadi-ai-developer.jpg</image:loc>
+    </image:image>
+  </url>
+  <url><loc>https://mahdi-mohammadi.ir/projects.html</loc></url>
+  <url><loc>https://mahdi-mohammadi.ir/skills.html</loc></url>
+  <url><loc>https://mahdi-mohammadi.ir/ideas.html</loc></url>
+  <url><loc>https://mahdi-mohammadi.ir/contact.html</loc></url>
 </urlset>

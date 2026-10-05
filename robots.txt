@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mahdi-portfolio-v2.mahdimohamadi4596.workers.dev/sitemap.xml
+Sitemap: https://mahdi-mohammadi.ir/sitemap.xmlSitemap: https://mahdi-mohammadi.ir/sitemap.xml

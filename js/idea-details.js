@@ -34,7 +34,7 @@ function renderIdeaBlocks(blocks) {
 // ==========================================================================
 // Share + Open Graph (فقط صفحه جزئیات Idea)
 // ==========================================================================
-const IDEA_DEFAULT_IMAGE = "assets/images/profile.jpg";
+const IDEA_DEFAULT_IMAGE = "assets/images/mahdi-mohammadi-ai-developer.jpg";
 
 const ideaIconAttrs = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
 const ideaIcons = {
