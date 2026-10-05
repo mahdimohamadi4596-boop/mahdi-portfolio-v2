@@ -126,6 +126,20 @@ async function copyIdeaLink(text) {
   }
 }
 
+// عکس Idea برای Web Share؛ از قبل آماده می‌شه تا share داخل همون کلیک انجام بشه
+let ideaShareFile = null;
+
+async function prepareIdeaShareFile(idea) {
+  if (!idea.image || typeof navigator.canShare !== "function") return;
+  if (ideaShareFile && ideaShareFile.id === idea.id) return;
+  try {
+    const blob = await (await fetch(idea.image.replace(/\\/g, "/"))).blob();
+    const ext = (blob.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
+    const file = new File([blob], `${idea.id}.${ext}`, { type: blob.type });
+    if (navigator.canShare({ files: [file] })) ideaShareFile = { id: idea.id, file };
+  } catch (_) { /* بدون عکس ادامه می‌ده */ }
+}
+
 function closeIdeaShareMenus() {
   document.querySelectorAll(".idea-share.open").forEach(box => {
     box.classList.remove("open");
@@ -164,7 +178,12 @@ function initIdeaShare() {
       setTimeout(() => { item.classList.remove("copied"); item.innerHTML = original; }, 1800);
     } else if (item.dataset.share === "native") {
       closeIdeaShareMenus();
-      try { await navigator.share({ title, text, url }); } catch (_) { /* لغو توسط کاربر */ }
+            // اگه عکس آماده و قابل ارسال بود، عکس + عنوان + توضیح + لینک با هم می‌رن
+      const withImage = ideaShareFile && navigator.canShare({ files: [ideaShareFile.file] });
+      const data = withImage
+        ? { files: [ideaShareFile.file], title, text: `${title}\n${text}\n${url}` }
+        : { title, text, url };
+      try { await navigator.share(data); } catch (_) { /* لغو توسط کاربر */ }
     } else {
       closeIdeaShareMenus(); // لینک Telegram
     }
@@ -198,6 +217,7 @@ function renderIdeaDetails() {
   const blocks = idea.content[lang] || idea.content.en;
   const url = getIdeaUrl(idea.id);
   updateIdeaMeta(idea, lang, url);
+  prepareIdeaShareFile(idea);
 
   root.innerHTML = `
     <article class="idea-article pd-glass container">
