@@ -197,6 +197,50 @@ function initIdeaShare() {
   });
 }
 
+// سئو صفحه Idea: عنوان، توضیح، canonical و داده ساختاریافته (Article)
+function updateIdeaSeo(idea, lang) {
+  const url = getIdeaUrl(idea.id);
+  const other = lang === "fa" ? "en" : "fa";
+  const title = idea.title[lang];
+  const description = idea.description[lang];
+
+  document.title = `${title} | Mahdi Mohammadi`;
+  document.querySelectorAll('meta[name="description"]').forEach(m => m.setAttribute("content", description));
+
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.appendChild(canonical);
+  }
+  canonical.href = url;
+
+  let ld = document.getElementById("idea-jsonld");
+  if (!ld) {
+    ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.id = "idea-jsonld";
+    document.head.appendChild(ld);
+  }
+  ld.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    alternativeHeadline: idea.title[other] || undefined,
+    description,
+    inLanguage: lang,
+    url,
+    mainEntityOfPage: url,
+    image: new URL((idea.image || IDEA_DEFAULT_IMAGE).replace(/\\/g, "/"), location.href).href,
+    author: {
+      "@type": "Person",
+      name: "Mahdi Mohammadi",
+      alternateName: "مهدی محمدی",
+      url: new URL("./", location.href).href
+    }
+  });
+}
+
 function renderIdeaDetails() {
   const root = document.getElementById("idea-root");
   if (!root) return;
@@ -213,7 +257,7 @@ function renderIdeaDetails() {
     return;
   }
 
-  document.title = `${idea.title[lang]} | Mahdi`;
+  updateIdeaSeo(idea, lang);
   const blocks = idea.content[lang] || idea.content.en;
   const url = getIdeaUrl(idea.id);
   updateIdeaMeta(idea, lang, url);

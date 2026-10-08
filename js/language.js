@@ -6,8 +6,7 @@ function detectDefaultLanguage() {
   const saved = localStorage.getItem("lang");
   if (saved) return saved;
 
-  const browserLang = navigator.language || navigator.userLanguage;
-  return browserLang.startsWith("fa") ? "fa" : "en";
+  return "fa";
 }
 
 function setLanguage(lang) {
