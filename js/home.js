@@ -17,7 +17,7 @@ function renderFeaturedProjects() {
       </div>
       <div class="project-links">
         ${p.github ? `<a href="${p.github}" target="_blank">GitHub</a>` : ""}
-        ${p.demo ? `<a href="${p.demo}" target="_blank">Demo</a>` : ""}
+        ${p.demo ? `<a href="${p.demo}" ${/\.zip($|\?)/i.test(p.demo) ? "download" : 'target="_blank"'}>Demo</a>` : ""}
         <a href="project.html?id=${p.id}" data-i18n="home.viewProject">View Details</a>
       </div>
     </div>

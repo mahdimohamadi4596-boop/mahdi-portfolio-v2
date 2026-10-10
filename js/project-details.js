@@ -34,7 +34,7 @@ function renderProjectDetails() {
     `<section class="pd-section"><div class="container"><h2 class="pd-h2">${title}</h2>${body}</div></section>`;
 
   const actions =
-    (p.demo ? `<a class="btn btn-primary" href="${esc(p.demo)}" target="_blank" rel="noopener">${ui.demo}</a>` : "") +
+      (p.demo ? `<a class="btn btn-primary" href="${esc(p.demo)}" ${/\.zip($|\?)/i.test(p.demo) ? "download" : 'target="_blank" rel="noopener"'}>${ui.demo}</a>` : "") +
     (p.github ? `<a class="btn btn-outline" href="${esc(p.github)}" target="_blank" rel="noopener">${ui.github}</a>` : "");
 
   const hero = `

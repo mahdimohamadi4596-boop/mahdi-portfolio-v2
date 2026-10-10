@@ -47,6 +47,7 @@ const projects = [
   },
 
 
+
   {
     id: "ai-file-agent",
     name: "AI File Management Agent",
@@ -146,6 +147,7 @@ while True:
   },
 
 
+
   {
     id: "lumina",
     name: "LUMINA",
@@ -177,7 +179,7 @@ while True:
     },
     gallery: [],
     github: "",
-    demo: "",
+    demo: "https://github.com/mahdimohamadi4596-boop/LUMINA-app/releases/download/v1.0.0/LUMINA-v1.0-win64.zip",
       code: { // نمونه — با کد واقعی خودت عوض کن؛ اگه نخوای این بخش رو حذف کن
       language: "python",
       snippet: `
