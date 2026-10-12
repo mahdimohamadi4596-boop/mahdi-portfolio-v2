@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUMI</title>
+<style>
+  html, body { width:100%; height:100%; margin:0; overflow:hidden; background:#0a0f1d; }
+  canvas { display:block; width:100%; height:100%; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(() => {
+  "use strict";
+  const LOOP = 15, N = 220, TAU = Math.PI * 2;
+  const BLUE = "#4F8CFF", VIOLET = "#7B61FF";
+  const FONT = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+  const cv = document.getElementById("c");
+  const ctx = cv.getContext("2d");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Easing helpers
+  const clamp = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
+  const win = (t, a, b) => clamp((t - a) / (b - a));
+  const easeIO = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const easeOut = (t) => 1 - Math.pow(1 - t, 4);
+
+  // Preallocated thread buffers (no allocations in the frame loop)
+  const TX = new Float32Array(N), TY = new Float32Array(N);
+  const SEG = new Float32Array(N), XS = new Float32Array(N), YS = new Float32Array(N);
+  // Unravel order: outer loops (segments 0 and 4) first, centre loop last
+  const segStart = [3, 4.2, 5.4, 4.2, 3];
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1);
+    const th = t * TAU * 2.2;
+    // Tangled curve: sum of sines with different frequencies forms loops
+    TX[i] = 0.22 * Math.sin(3.1 * th) + 0.1 * Math.cos(1.7 * th + 1);
+    TY[i] = 0.2 * Math.cos(2.3 * th) + 0.09 * Math.sin(4.1 * th + 0.5);
+    const j = Math.min(4, Math.floor(t * 5));
+    SEG[i] = segStart[j] + (t * 5 - j) * 0.6;
+  }
+
+  let W = 1, H = 1, U = 1, DPR = 1, bg = null, glow = null, grad = null;
+
+  function buildBackdrop() {
+    bg = document.createElement("canvas");
+    bg.width = Math.round(W * DPR);
+    bg.height = Math.round(H * DPR);
+    const b = bg.getContext("2d");
+    b.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const g = b.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.hypot(W, H) / 2);
+    g.addColorStop(0, "#111a33");
+    g.addColorStop(1, "#0a0f1d");
+    b.fillStyle = g;
+    b.fillRect(0, 0, W, H);
+  }
+
+  // Soft luminous sprite for the clarity point
+  function buildGlow() {
+    glow = document.createElement("canvas");
+    glow.width = glow.height = 256;
+    const g = glow.getContext("2d");
+    const gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    gr.addColorStop(0, "rgba(79,140,255,1)");
+    gr.addColorStop(0.25, "rgba(79,140,255,0.5)");
+    gr.addColorStop(0.55, "rgba(123,97,255,0.18)");
+    gr.addColorStop(1, "rgba(123,97,255,0)");
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 256, 256);
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    U = Math.min(W, H);
+    buildBackdrop();
+    if (!glow) buildGlow();
+    // Gradient spans the straight-line extent, in CSS pixels
+    grad = ctx.createLinearGradient(W / 2 - 0.4 * U, 0, W / 2 + 0.4 * U, 0);
+    grad.addColorStop(0, BLUE);
+    grad.addColorStop(1, VIOLET);
+    if (reduced) draw(12, true);
+  }
+
+  // Compute thread points into the preallocated buffers
+  function computePoints(T, c, cx, cy, sc) {
+    for (let i = 0; i < N; i++) {
+      const t = i / (N - 1);
+      const m = easeIO(clamp((T - SEG[i]) / 2.2)); // 0 = tangled, 1 = straight
+      const tb = 1 - m;
+      const tight = 1 - 0.25 * Math.sin(Math.PI * m); // tighten, then relax
+      const sway = 0.012 * Math.sin(T * 0.6 + t * 7); // gentle drift
+      const drift = 0.006 * Math.cos(T * 0.5 + t * 5) * tb;
+      const x = (TX[i] * tight * tb + (t - 0.5) * 0.8 * m + drift) * c;
+      const y = (TY[i] * tb + sway) * c;
+      XS[i] = cx + x * sc;
+      YS[i] = cy + y * sc;
+    }
+  }
+
+  function drawThread(a) {
+    ctx.beginPath();
+    ctx.moveTo(XS[0], YS[0]);
+    for (let i = 1; i < N; i++) ctx.lineTo(XS[i], YS[i]);
+    ctx.globalCompositeOperation = "lighter";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = grad;
+    ctx.shadowColor = "rgba(79,140,255,0.6)";
+    ctx.shadowBlur = U * 0.02;
+    ctx.lineWidth = 5;          // soft outer halo
+    ctx.globalAlpha = a * 0.12;
+    ctx.stroke();
+    ctx.lineWidth = 1.5;        // crisp core line
+    ctx.globalAlpha = a * 0.9;
+    ctx.stroke();
+  }
+
+  // Render the composition at time T (seconds within the loop)
+  function draw(T, still) {
+    const cx = W / 2, cy = H / 2;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    ctx.drawImage(bg, 0, 0, W, H);
+
+    // Gentle fade out at the end so the loop restarts without a cut
+    const fade = 1 - easeIO(win(T, 13, 15));
+
+    if (!still) {
+      // Thread fades in from the centre outward, then contracts (8-9.8s)
+      const alpha = easeIO(win(T, 0, 3));
+      const grow = U * (0.6 + 0.4 * easeOut(win(T, 0, 3)));
+      const c = 1 - easeIO(win(T, 8, 9.8));
+      if (c > 0.002 && alpha > 0.001) {
+        computePoints(T, c, cx, cy, grow);
+        drawThread(fade * alpha);
+      }
+
+      // Soft expanding ring: the "moment of clarity"
+      const rt = easeOut(win(T, 8.8, 10.6));
+      if (rt > 0 && rt < 1) {
+        ctx.globalCompositeOperation = "lighter";
+        ctx.strokeStyle = BLUE;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = fade * (1 - rt) * 0.35;
+        ctx.beginPath();
+        ctx.arc(cx, cy, U * (0.02 + 0.3 * rt), 0, TAU);
+        ctx.stroke();
+      }
+    }
+
+    // Clarity point brightens at the centre
+    const pA = still ? 1 : easeIO(win(T, 8.4, 9.6));
+    if (pA > 0) {
+      const r = U * 0.05;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = fade * pA;
+      ctx.drawImage(glow, cx - r * 2.2, cy - r * 2.2, r * 4.4, r * 4.4);
+      ctx.fillStyle = BLUE;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 1.8, 0, TAU);
+      ctx.fill();
+    }
+
+    // Wordmark and subtitle
+    ctx.globalCompositeOperation = "source-over";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#ffffff";
+    const wA = still ? 1 : easeOut(win(T, 10, 11.4));
+    const sA = still ? 1 : easeOut(win(T, 10.4, 11.8));
+    const fs = Math.max(18, U * 0.12);          // larger, brand-scale wordmark
+    const ty = cy + U * 0.25;
+
+    // Wordmark: weight 300, 0.35em tracking, soft blue glow
+    ctx.shadowColor = "rgba(79,140,255,0.5)";
+    ctx.shadowBlur = U * 0.04;
+    ctx.font = `300 ${fs}px ${FONT}`;
+    ctx.letterSpacing = fs * 0.35 + "px";
+    ctx.globalAlpha = fade * wA * 0.92;
+    ctx.fillText("LUMI", cx + fs * 0.175, ty + (1 - wA) * 6);
+
+    const sf = Math.max(11, U * 0.02);
+    ctx.font = `300 ${sf}px ${FONT}`;
+    ctx.letterSpacing = sf * 0.2 + "px";
+    ctx.shadowBlur = U * 0.012;
+    ctx.globalAlpha = fade * sA * 0.5;
+    ctx.fillText("Self-reflection · Focus · Growth", cx + sf * 0.1, ty + fs * 0.85 + (1 - sA) * 6);
+
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+
+  // Delta-time loop, clamped so tab switches never cause jumps
+  let T = 0, last = 0, raf = 0;
+  function frame(now) {
+    const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
+    last = now;
+    T = (T + dt) % LOOP;
+    draw(T, false);
+    raf = requestAnimationFrame(frame);
+  }
+  function start() {
+    if (!raf) { last = 0; raf = requestAnimationFrame(frame); }
+  }
+  function stop() {
+    cancelAnimationFrame(raf);
+    raf = 0;
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") stop();
+    else if (!reduced) start();
+  });
+  window.addEventListener("resize", resize);
+
+  resize();
+  if (!reduced && document.visibilityState !== "hidden") start();
+})();
+</script>
+</body>
+</html>

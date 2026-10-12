@@ -1256,6 +1256,7 @@ body::after {
   overflow: hidden;
 }
 .pd-cover img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+.pd-cover iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 14px; }
 
 .pd-section { padding: 36px 0; }
 .pd-h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; }

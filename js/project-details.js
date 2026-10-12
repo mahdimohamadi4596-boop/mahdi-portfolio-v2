@@ -43,7 +43,7 @@ function renderProjectDetails() {
       <h1 class="pd-title">${esc(p.name)}</h1>
       <p class="pd-caption">${esc(pText(p.description, lang))}</p>
       ${actions ? `<div class="pd-actions">${actions}</div>` : ""}
-      ${p.cover ? `<div class="pd-cover"><img src="${esc(p.cover)}" alt="${esc(p.name)}" onerror="this.closest('.pd-cover').remove()"></div>` : ""}
+      <div class="pd-cover" id="pd-cover"></div>
     </div></section>`;
 
   const overviewHtml = overview ? section(ui.overview, `<p class="pd-text">${esc(overview)}</p>`) : "";
@@ -92,8 +92,10 @@ function renderProjectDetails() {
 
     root.innerHTML = `<div class="pd-glass container">${hero + overviewHtml + psHtml + featuresHtml + stackHtml + archHtml + galleryHtml + codeHtml}</div>`;
 
+  initCover(p);
   initCarousel();
   initLightbox(gallery, p.name);
+
   if (hasCode) initCode(p, ui);
 }
 
@@ -245,6 +247,27 @@ function initCode(p, ui) {
       setTimeout(() => { copy.classList.remove("copied"); copy.title = ui.copy; }, 1500);
     }).catch(() => {});
   };
+}
+
+// کاور هر پروژه: اگر فایل انیمیشن assets/animation/<id>.html وجود داشت، داخل همان کادر نمایش داده می‌شود
+// وگرنه عکس کاور پروژه نمایش داده می‌شود
+async function initCover(p) {
+  const box = document.getElementById("pd-cover");
+  if (!box) return;
+
+  const showImage = () => {
+    if (!p.cover) return box.remove();
+    box.innerHTML = `<img src="${esc(p.cover)}" alt="${esc(p.name)}" onerror="this.closest('.pd-cover').remove()">`;
+  };
+
+  const animPath = `assets/animation/${p.id}.html`;
+  try {
+    const res = await fetch(animPath, { method: "HEAD" });
+    if (!res.ok) throw new Error("no animation");
+    box.innerHTML = `<iframe src="${esc(animPath)}" title="${esc(p.name)}" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>`;
+  } catch (e) {
+    showImage();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", renderProjectDetails);
