@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI File Management Agent</title>
+<style>
+/* Base: deep navy, no scroll */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0a0f1d}
+/* 16:9 stage, scaled to fit any viewport (set by JS) */
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:50% 50%;perspective:1200px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#111a33 0%,#0a0f1d 72%)}
+#fx{position:absolute;left:0;top:0;width:1600px;height:900px}
+/* File cards: DOM elements moved only by transform/opacity */
+.card{position:absolute;left:0;top:0;width:64px;height:80px;box-sizing:border-box;border-radius:8px;background:#1a2540;border:1px solid rgba(79,140,255,.25);will-change:transform,opacity;overflow:hidden}
+.card.lit{border-color:rgba(79,140,255,.8)}
+.card svg{position:absolute;left:18px;top:20px}
+.card .bar{position:absolute;left:12px;bottom:14px;width:40px;height:3px;border-radius:2px;background:rgba(255,255,255,.15)}
+.card .tag{position:absolute;right:6px;top:6px;font:600 8px/1 system-ui,sans-serif;letter-spacing:.08em;color:#4F8CFF;opacity:0}
+.card .scan{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#4F8CFF,transparent);opacity:0}
+/* Folders */
+.folder{position:absolute;width:180px;height:120px;opacity:0;will-change:transform,opacity}
+.folder svg{position:absolute;left:0;top:0;width:180px;height:120px}
+.folder .glow{position:absolute;left:-1px;top:-1px;right:-1px;bottom:-1px;border-radius:12px;border:1px solid rgba(123,97,255,.9);box-shadow:0 0 18px rgba(79,140,255,.45);opacity:0}
+.folder .lbl{position:absolute;left:0;right:0;bottom:-28px;text-align:center;font:500 11px/1 system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.55)}
+/* Agent orb, halo, title */
+#orb{position:absolute;left:752px;top:402px;width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#7B61FF 0%,#4F8CFF 42%,#16234a 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 40px rgba(79,140,255,.35);opacity:0;will-change:transform,opacity}
+#orb svg{position:absolute;left:0;top:0;width:96px;height:96px}
+#halo{position:absolute;left:710px;top:360px;width:180px;height:180px;border-radius:50%;border:1px solid rgba(79,140,255,.3);opacity:0;will-change:transform,opacity}
+#title{position:absolute;left:0;width:1600px;top:570px;margin:0;text-align:center;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:300;font-size:clamp(18px,3.2vw,34px);letter-spacing:.12em;color:#fff;opacity:0;white-space:nowrap;will-change:transform,opacity}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="fx"></canvas>
+  <div id="halo"></div>
+  <div id="orb">
+    <svg viewBox="0 0 96 96">
+      <defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="rgba(255,255,255,.55)"/></linearGradient></defs>
+      <path id="gf" d="M34 26h18l12 12v32H34z" fill="url(#gw)" opacity="0"/>
+      <path id="gl" pathLength="100" d="M34 26h18l12 12v32H34z M52 26v12h12" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100"/>
+    </svg>
+  </div>
+  <h1 id="title">AI File Management Agent</h1>
+</div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const stage=$('stage'),cv=$('fx'),ctx=cv.getContext('2d'),halo=$('halo'),orb=$('orb'),gl=$('gl'),gf=$('gf'),title=$('title');
+const W=1600,H=900,END=7;
+const narrow=innerWidth<600;
+// Performance caps: lower DPR on weak devices
+const lowEnd=navigator.hardwareConcurrency<=4||navigator.deviceMemory<=4;
+const DPR=lowEnd?1:Math.min(devicePixelRatio||1,1.5);
+cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+const clamp=v=>v<0?0:v>1?1:v;
+const io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2; // ease-in-out (moves)
+const out=x=>1-Math.pow(1-x,4);                   // ease-out (arrivals, fades)
+
+// Pre-rendered sprites: particle glow and light-wave band
+const glow=document.createElement('canvas');glow.width=glow.height=64;
+const gc=glow.getContext('2d');const rg=gc.createRadialGradient(32,32,0,32,32,32);
+rg.addColorStop(0,'rgba(79,140,255,1)');rg.addColorStop(.4,'rgba(79,140,255,.35)');rg.addColorStop(1,'rgba(79,140,255,0)');
+gc.fillStyle=rg;gc.fillRect(0,0,64,64);
+const band=document.createElement('canvas');band.width=240;band.height=H;const bc=band.getContext('2d');
+const lg=bc.createLinearGradient(0,0,240,0);
+lg.addColorStop(0,'rgba(79,140,255,0)');lg.addColorStop(.5,'rgba(79,140,255,1)');lg.addColorStop(1,'rgba(123,97,255,0)');
+bc.fillStyle=lg;bc.fillRect(0,0,240,H);
+
+// Particles: preallocated typed arrays
+const NP=narrow?12:28;
+const pX=new Float32Array(NP),pY=new Float32Array(NP),pVX=new Float32Array(NP),pVY=new Float32Array(NP),pR=new Float32Array(NP),pA=new Float32Array(NP);
+for(let p=0;p<NP;p++){pX[p]=Math.random()*W;pY[p]=Math.random()*H;pVX[p]=(Math.random()-.5)*10;pVY[p]=(Math.random()-.5)*8;pR[p]=5+Math.random()*9;pA[p]=.2+Math.random()*.5;}
+function advance(dt){for(let p=0;p<NP;p++){pX[p]=(pX[p]+pVX[p]*dt+W)%W;pY[p]=(pY[p]+pVY[p]*dt+H)%H;}}
+
+// Card and folder layout
+const NC=narrow?5:7;
+const CX=[330,520,240,640,430,760,560],CY=[290,540,640,300,780,450,600];
+const CS=[1,.7,.6,1.1,.55,.8,.65],CO=[1,.4,.35,1,.35,.7,.45];
+const TYPES=['PDF','PY','TXT','IMG','PDF','PY','IMG'];
+const FOLD=[0,1,0,2,0,1,2];              // DOCUMENTS, PROJECTS, MEDIA
+const LBL=['DOCUMENTS','PROJECTS','MEDIA'],FY=[320,470,620],FX=1280;
+const ICON={
+  doc:'<path d="M6 3h8l4 4v14H6z M9 12h6 M9 15h6"/>',
+  code:'<path d="M9 8l-4 4 4 4 M15 8l4 4-4 4"/>',
+  img:'<rect x="5" y="5" width="14" height="14" rx="2"/><circle cx="10" cy="10" r="1.6"/><path d="M5 17l4-4 3 3 2-2 5 5"/>'
+};
+// Wave hits each card when it passes its x position
+const hitT=CX.map(x=>1.5+(x+240)/2080*1.4);
+const ARR=CX.map((_,i)=>3+i*.12+1);      // arrival time in folder
+
+const folderEl=[],glowEl=[],cardEl=[],tagEl=[],scanEl=[],litOn=[];
+for(let k=0;k<3;k++){
+  const f=document.createElement('div');f.className='folder';
+  f.style.left=(FX-90)+'px';f.style.top=(FY[k]-60)+'px';
+  f.innerHTML=`<svg viewBox="0 0 180 120"><path d="M6 22a6 6 0 0 1 6-6h44l12 12h100a6 6 0 0 1 6 6v70a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6z" fill="rgba(79,140,255,.04)" stroke="rgba(79,140,255,.5)"/></svg><div class="glow"></div><div class="lbl">${LBL[k]}</div>`;
+  stage.insertBefore(f,halo);folderEl.push(f);glowEl.push(f.querySelector('.glow'));
+}
+for(let i=0;i<NC;i++){
+  const kind=TYPES[i]==='PY'?'code':TYPES[i]==='IMG'?'img':'doc';
+  const el=document.createElement('div');el.className='card';
+  el.innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4F8CFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${ICON[kind]}</svg><div class="bar"></div><span class="tag">${TYPES[i]}</span><div class="scan"></div>`;
+  stage.insertBefore(el,halo);
+  cardEl.push(el);tagEl.push(el.querySelector('.tag'));scanEl.push(el.querySelector('.scan'));litOn.push(false);
+}
+
+// One frame at timeline time t (seconds); dt is 0 when only redrawing
+function frame(t,dt){
+  if(dt)advance(dt);
+  ctx.clearRect(0,0,W,H);
+  const pa=t<6.7?1:Math.max(.12,1-.88*clamp((t-6.7)/.3)); // particles fade, keep faint
+  const conv=io(clamp((t-5)/1.4));                       // particles converge at the end
+  for(let p=0;p<NP;p++){
+    const x=pX[p]+(W/2-pX[p])*conv,y=pY[p]+(H/2-pY[p])*conv,r=pR[p];
+    ctx.globalAlpha=pA[p]*pa;
+    ctx.drawImage(glow,x-r,y-r,r*2,r*2);
+  }
+  // Blue light wave sweeps left to right, 1.5s to 2.95s
+  if(t>1.5&&t<2.95){
+    const wx=-240+(t-1.5)/1.4*2080;
+    ctx.globalAlpha=.5*(t>2.8?(2.95-t)/.15:1);
+    ctx.drawImage(band,wx-120,0,240,H);
+  }
+  ctx.globalAlpha=1;
+
+  // Cards: float, light up, arc into folders, then gather to center
+  for(let i=0;i<NC;i++){
+    const el=cardEl[i];
+    const bx=CX[i]+Math.sin(t*.5+i)*18,by=CY[i]+Math.cos(t*.4+i*1.3)*12,bz=(CS[i]-.5)*220;
+    const rx=Math.sin(t*.3+i)*7,ry=Math.cos(t*.25+i*.7)*9;
+    let sc=CS[i],op=CO[i];
+    const tx=FX,ty=FY[FOLD[i]];
+    const o=io(clamp((t-3-i*.12)/1));
+    let x=bx+(tx-bx)*o,y=by+(ty-by)*o-Math.sin(o*Math.PI)*46,z=bz+Math.sin(o*Math.PI)*80;
+    const arr=out(clamp((o-.8)/.2));
+    sc*=1-.3*arr;op*=1-.85*arr;
+    const gt=io(clamp((t-5-i*.05)/1));
+    x+=(W/2-x)*gt;y+=(H/2-y)*gt;sc*=1-.5*gt;op*=1-gt;
+    el.style.transform=`translate3d(${x-32}px,${y-40}px,${z}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${sc})`;
+    el.style.opacity=op;
+    const hit=hitT[i];
+    if((t>=hit)!==litOn[i]){litOn[i]=t>=hit;el.classList.toggle('lit',litOn[i]);}
+    tagEl[i].style.opacity=clamp((t-hit-.3)/.4);
+    const sp=clamp((t-hit)/.5);
+    scanEl[i].style.opacity=sp>0&&sp<1?.9:0;
+    scanEl[i].style.transform=`translateY(${sp*78}px)`;
+  }
+
+  // Folders: fade in, pulse on arrival, then gather
+  for(let k=0;k<3;k++){
+    const fo=out(clamp((t-3-k*.2)/.6)),gt=io(clamp((t-5)/1));
+    folderEl[k].style.opacity=.9*fo*(1-gt);
+    folderEl[k].style.transform=`translate3d(${(W/2-FX)*gt}px,${(H/2-FY[k])*gt}px,0) scale(${1-.5*gt})`;
+    let gv=0;
+    for(let i=0;i<NC;i++){
+      if(FOLD[i]!==k)continue;
+      const q=(t-ARR[i])/.9;
+      if(q>0&&q<1)gv=Math.max(gv,Math.sin(q*Math.PI));
+    }
+    glowEl[k].style.opacity=gv;
+  }
+
+  // Agent orb: glyph draws in, then fills; halo fades in
+  const oa=out(clamp((t-5.8)/.7));
+  const settle=t>6.7?1+.03*(1-clamp((t-6.7)/.3)):1;
+  orb.style.opacity=oa;
+  orb.style.transform=`scale(${(.6+.4*oa)*settle})`;
+  halo.style.opacity=.5*out(clamp((t-5.8)/1.2));
+  halo.style.transform=`scale(${.9+.1*out(clamp((t-5.8)/1.5))})`;
+  gl.style.strokeDashoffset=(100*(1-io(clamp((t-5.9)/.8))))+'px';
+  gf.style.opacity=clamp((t-6.6)/.4);
+
+  // Title rises into place
+  const ta=out(clamp((t-6)/1));
+  title.style.opacity=.95*ta;
+  title.style.transform=`translate3d(0,${6*(1-ta)}px,0)`;
+
+  if(t>=END)document.body.classList.add('done');
+}
+
+// Fit the 16:9 stage into any viewport
+function fit(){
+  const s=Math.min(innerWidth/W,innerHeight/H);
+  stage.style.transform=`translate(-50%,-50%) scale(${s})`;
+}
+
+// Timeline clock: pauses when hidden or off-screen, stops at END
+let elapsed=0,last=0,raf=0,onScreen=true;
+function tick(now){
+  raf=0;
+  if(document.hidden||!onScreen){last=0;return;}
+  const dt=last?Math.min((now-last)/1000,.05):0;last=now;
+  elapsed=Math.min(elapsed+dt,END);
+  frame(elapsed,dt);
+  if(elapsed<END)raf=requestAnimationFrame(tick);
+}
+function start(){
+  if(!raf&&elapsed<END&&!document.hidden&&onScreen){last=0;raf=requestAnimationFrame(tick);}
+}
+
+fit();
+addEventListener('resize',()=>{fit();frame(elapsed,0);});
+document.addEventListener('visibilitychange',start);
+new IntersectionObserver(e=>{onScreen=e[0].isIntersecting;start();}).observe(stage);
+
+// Reduced motion: jump straight to the final frame
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+  elapsed=END;frame(END,0);
+}else{
+  frame(0,0);
+  start();
+}
+})();
+</script>
+</body>
+</html>

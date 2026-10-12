@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUMINA</title>
+<style>
+/* Page: full viewport, no scroll */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0a0f1d;}
+
+/* 16:9 stage, scaled to fit any container */
+.stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;margin:-360px 0 0 -640px;
+  transform:scale(var(--s,1));transform-origin:center;overflow:hidden;
+  background:linear-gradient(160deg,#0a0f1d,#111a33);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+
+/* Pause everything when hidden or off-screen */
+body.paused *{animation-play-state:paused!important;}
+
+/* Scene container: fades out at 5.0s */
+.scene{position:absolute;inset:0;animation:sceneOut .6s 5s cubic-bezier(.65,0,.35,1) both;}
+
+/* Terminal: exit wrapper collapses toward center; inner wrapper rises in */
+.win-out{position:absolute;left:190px;top:190px;width:560px;height:340px;
+  animation:winOut .9s 5s cubic-bezier(.65,0,.35,1) both;}
+.win-in{width:100%;height:100%;opacity:0;animation:riseIn 1s .1s cubic-bezier(.22,1,.36,1) both;}
+.win{position:relative;width:100%;height:100%;box-sizing:border-box;border-radius:14px;
+  background:rgba(15,22,41,.92);border:1px solid rgba(79,140,255,.25);
+  font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:17px;color:#e6edf8;}
+.dots{position:absolute;left:18px;top:16px;display:flex;gap:7px;}
+.dots i{display:block;width:9px;height:9px;border-radius:50%;background:#3b4663;}
+
+/* Command line */
+.line{position:absolute;left:26px;top:84px;white-space:nowrap;}
+.line>span:not(.flash){position:relative;}
+.ps{color:#8fb4e6;}
+.flash{position:absolute;left:-10px;top:-6px;right:-10px;bottom:-6px;border-radius:6px;
+  background:rgba(143,180,230,.16);opacity:0;pointer-events:none;}
+.press .flash{animation:flash .15s ease;}
+.cur{display:inline-block;width:9px;height:19px;background:#e6edf8;vertical-align:-3px;margin-left:2px;
+  animation:blink 1s ease-in-out 0s 4 both;}
+
+/* Status line and progress hairline */
+.status{position:absolute;left:26px;right:26px;top:150px;height:44px;}
+.status span{position:absolute;left:0;top:0;}
+.run{color:#8fb4e6;opacity:0;animation:runFade 1.2s 3s linear both;}
+.done-txt{color:#4F8CFF;opacity:0;animation:fadeIn .4s 3.8s cubic-bezier(.22,1,.36,1) both;}
+.hair{left:0;right:0;top:auto!important;bottom:0;height:1px;background:#4F8CFF;
+  transform:scaleX(0);transform-origin:left;animation:grow .8s 3s cubic-bezier(.65,0,.35,1) both;}
+
+/* Folder targets, outside the window on the right */
+.folder{position:absolute;width:120px;text-align:center;}
+.folder svg{display:block;width:120px;height:96px;fill:rgba(79,140,255,.05);}
+.folder span{display:block;margin-top:10px;font-size:13px;color:rgba(230,237,248,.8);}
+.f1{left:930px;top:236px;}
+.f2{left:930px;top:376px;}
+/* Pre-made blue glow, animated with opacity only */
+.glow{position:absolute;left:-8px;top:-8px;width:136px;height:112px;border-radius:12px;
+  border:1px solid rgba(79,140,255,.7);
+  background:radial-gradient(closest-side,rgba(79,140,255,.16),rgba(79,140,255,0));
+  opacity:0;animation:pulse .7s 4.2s ease-in-out;}
+
+/* Document icon flying along an arc: Project, then Output */
+.doc{position:absolute;left:679px;top:316px;width:22px;height:28px;opacity:0;z-index:3;
+  animation:fly 1.2s 3s cubic-bezier(.65,0,.35,1) both;}
+.doc svg{display:block;}
+
+/* Brand phase */
+.brand{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;pointer-events:none;}
+.word{margin:0;font-weight:300;letter-spacing:.4em;padding-left:.4em;color:#fff;
+  font-size:clamp(28px,6vw,56px);line-height:1;opacity:0;
+  animation:rise 1s cubic-bezier(.22,1,.36,1) 5.4s both;}
+.rule{width:140px;height:1px;margin-top:26px;background:#4F8CFF;opacity:.35;
+  transform:scaleX(0);animation:grow .8s cubic-bezier(.22,1,.36,1) 6.2s both;}
+.tag{margin-top:18px;font-size:14px;letter-spacing:.06em;color:#fff;opacity:0;
+  animation:toDim .8s cubic-bezier(.22,1,.36,1) 5.8s both;}
+
+/* Keyframes: arrivals use the ease-out curve, moves use the ease-in-out curve */
+@keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes winOut{to{opacity:0;transform:translate3d(175px,0,0) scale(.92)}}
+@keyframes sceneOut{to{opacity:0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes flash{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+@keyframes runFade{0%{opacity:0}33%{opacity:.7}66%{opacity:.7}100%{opacity:0}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pulse{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes toDim{from{opacity:0}to{opacity:.55}}
+@keyframes fly{
+  0%{opacity:0;transform:translate3d(0,0,0)}
+  8%{opacity:1}
+  25%{transform:translate3d(150px,-40px,24px)}   /* arc lift toward Project */
+  50%{transform:translate3d(300px,-46px,0)}      /* lands on Project */
+  75%{transform:translate3d(330px,20px,24px)}    /* arc lift toward Output */
+  85%{opacity:1}
+  100%{transform:translate3d(300px,94px,0);opacity:0} /* fades into Output */
+}
+
+/* Reduced motion: show the final frame at once */
+@media (prefers-reduced-motion: reduce){
+  .stage *{animation:none!important;}
+  .scene{display:none;}
+  .word{opacity:1;}
+  .rule{transform:none;opacity:.35;}
+  .tag{opacity:.55;}
+}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="scene">
+    <!-- Terminal window -->
+    <div class="win-out">
+      <div class="win-in">
+        <div class="win">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="line" id="prompt"><span class="flash"></span><span class="ps">lumina &gt;</span> <span id="cmd"></span><span class="cur"></span></div>
+          <div class="status">
+            <span class="run">Creating file...</span>
+            <span class="done-txt">Done</span>
+            <span class="hair"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Folder targets -->
+    <div class="folder f1">
+      <svg viewBox="0 0 120 96"><path d="M6 10Q6 4 12 4H44L54 16H108Q114 16 114 22V88Q114 92 110 92H10Q6 92 6 88Z" fill="inherit" stroke="#8fb4e6" stroke-width="1.5"/></svg>
+      <span>Project</span>
+    </div>
+    <div class="folder f2">
+      <svg viewBox="0 0 120 96"><path d="M6 10Q6 4 12 4H44L54 16H108Q114 16 114 22V88Q114 92 110 92H10Q6 92 6 88Z" fill="inherit" stroke="#8fb4e6" stroke-width="1.5"/></svg>
+      <div class="glow"></div>
+      <span>Output</span>
+    </div>
+
+    <!-- Flying document icon -->
+    <div class="doc">
+      <svg width="22" height="28" viewBox="0 0 22 28"><path d="M0 0H14L22 8V28H0Z" fill="#eef4ff"/><path d="M14 0V8H22Z" fill="#c9d8f0"/></svg>
+    </div>
+  </div>
+
+  <!-- Brand -->
+  <div class="brand">
+    <div class="word">LUMINA</div>
+    <div class="rule"></div>
+    <div class="tag">Your Commands. Your Workflow. Simplified.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+
+  // Scale the 16:9 stage to fit the viewport
+  const fit = () => stage.style.setProperty('--s', Math.min(innerWidth/1280, innerHeight/720));
+  fit();
+  addEventListener('resize', fit);
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Pause animations when the tab is hidden or the stage is off-screen
+  let onScreen = true;
+  const sync = () => document.body.classList.toggle('paused',
+    document.visibilityState === 'hidden' || !onScreen);
+  document.addEventListener('visibilitychange', sync);
+  new IntersectionObserver(e => { onScreen = e[0].isIntersecting; sync(); }).observe(stage);
+
+  // Typing effect: one setTimeout chain, 45-90ms per character
+  const cmd = 'cf report.pdf';
+  const out = document.getElementById('cmd');
+  const line = document.getElementById('prompt');
+  let i = 0;
+  function type(){
+    if (document.body.classList.contains('paused')) { setTimeout(type, 150); return; }
+    if (i < cmd.length) {
+      out.textContent += cmd[i++];
+      setTimeout(type, 45 + Math.random()*45);
+    } else {
+      line.classList.add('press'); // brighten prompt line after typing
+    }
+  }
+
+  if (reduce) {
+    out.textContent = cmd;
+    document.body.classList.add('done');
+  } else {
+    setTimeout(type, 1500);
+    setTimeout(() => document.body.classList.add('done'), 7000);
+  }
+})();
+</script>
+</body>
+</html>
