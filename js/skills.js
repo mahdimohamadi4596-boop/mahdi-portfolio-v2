@@ -5,6 +5,15 @@ function escSkill(s) {
   return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+// آیکون هر کارت (به ترتیب آیتم‌ها در data/skills.js). آیتم جدید بدون آیکون، آیکون پیش‌فرض می‌گیره
+const skillIcons = {
+  expertise: ["brain", "code", "package"],
+  breakdown: ["brain", "code", "package"],
+  stack: ["code", "brain", "wrench", "git-branch"],
+  services: ["layout", "bot", "file-search", "plug", "server", "flask", "zap"],
+  collab: ["briefcase", "rocket", "puzzle", "bot", "users"]
+};
+
 function renderSkillsPage() {
   const grid = document.getElementById("expertise-grid");
   if (!grid) return;
@@ -27,16 +36,18 @@ function renderSkillsPage() {
   ).join("");
 
   // Core Expertise
-  grid.innerHTML = skillsData.expertise.map(e => `
+  grid.innerHTML = skillsData.expertise.map((e, i) => `
     <div class="expertise-card expertise-${e.tier}">
+      ${iconBadge(skillIcons.expertise[i], e.tier === "primary" ? "lg" : "")}
       <h3>${escSkill(e.title[lang])}</h3>
       <p class="expertise-desc">${escSkill(e.desc[lang])}</p>
       <div class="expertise-chips">${e.chips.map(c => `<span class="tech-tag">${escSkill(c)}</span>`).join("")}</div>
     </div>`).join("");
 
   // Skills Breakdown
-  document.getElementById("breakdown-grid").innerHTML = skillsData.breakdown.map(cat => `
+  document.getElementById("breakdown-grid").innerHTML = skillsData.breakdown.map((cat, i) => `
     <div class="path-card skill-category-card">
+      ${iconBadge(skillIcons.breakdown[i])}
       <h3>${escSkill(cat.title[lang])}</h3>
       <div class="project-tech">${cat.skills.map(s => `<span class="tech-tag">${escSkill(s)}</span>`).join("")}</div>
       <div class="skill-used-in">
@@ -47,8 +58,9 @@ function renderSkillsPage() {
 
   // Technology Stack
   document.getElementById("stack-title").textContent = ui.stackTitle;
-  document.getElementById("stack-grid").innerHTML = skillsData.techStack.map(g => `
+  document.getElementById("stack-grid").innerHTML = skillsData.techStack.map((g, i) => `
     <div class="path-card">
+      ${iconBadge(skillIcons.stack[i])}
       <h3>${escSkill(g.group[lang])}</h3>
       <div class="project-tech">${g.items.map(i => `<span class="tech-tag">${escSkill(i)}</span>`).join("")}</div>
     </div>`).join("");
@@ -80,8 +92,9 @@ function renderSkillsPage() {
 
   // Services
   document.getElementById("services-title").textContent = ui.servicesTitle;
-  document.getElementById("services-grid").innerHTML = skillsData.services.map(s => `
+  document.getElementById("services-grid").innerHTML = skillsData.services.map((s, i) => `
     <div class="path-card service-card">
+      ${iconBadge(skillIcons.services[i])}
       <h3>${escSkill(s.title[lang])}</h3>
       <p>${escSkill(s.desc[lang])}</p>
       <div class="project-tech">${s.chips.map(c => `<span class="tech-tag">${escSkill(c)}</span>`).join("")}</div>
@@ -90,8 +103,9 @@ function renderSkillsPage() {
 
   // Collaboration
   document.getElementById("collab-title").textContent = ui.collabTitle;
-  document.getElementById("collab-grid").innerHTML = skillsData.collaboration.map(c => `
+  document.getElementById("collab-grid").innerHTML = skillsData.collaboration.map((c, i) => `
     <div class="path-card">
+      ${iconBadge(skillIcons.collab[i])}
       <h3>${escSkill(c.title[lang])}</h3>
       <p>${escSkill(c.desc[lang])}</p>
     </div>`).join("");

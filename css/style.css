@@ -1256,7 +1256,6 @@ body::after {
   overflow: hidden;
 }
 .pd-cover img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
-.pd-cover iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 14px; }
 
 .pd-section { padding: 36px 0; }
 .pd-h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; }
@@ -1749,16 +1748,16 @@ body.lb-open { overflow: hidden; }
 /* Share: دکمه + منوی شیشه‌ای */
 /* دکمه Share: گوشه‌ی بالای کارت، هم‌ردیف لینک برگشت (فارسی: چپ، انگلیسی: راست) */
 .idea-article { position: relative; }
-.idea-share {
+.idea-act {
   position: absolute;
   top: 33px;
   inset-inline-end: 32px;
   z-index: 5;
 }
-.idea-share-btn { padding: 10px 20px; font-size: 0.9rem; }
-.idea-share-btn svg { width: 18px; height: 18px; }
+.idea-act-btn { padding: 10px 20px; font-size: 0.9rem; }
+.idea-act-btn svg { width: 18px; height: 18px; }
 
-.idea-share-menu {
+.idea-act-menu {
   position: absolute;
   top: calc(100% + 10px);
   inset-inline-end: 0;
@@ -1783,14 +1782,14 @@ body.lb-open { overflow: hidden; }
   transition: opacity 0.2s ease, transform 0.25s var(--ease), visibility 0.25s;
 }
 
-.idea-share.open .idea-share-menu {
+.idea-act.open .idea-act-menu {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: none;
 }
 
-.idea-share-item {
+.idea-act-item {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1804,16 +1803,16 @@ body.lb-open { overflow: hidden; }
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.idea-share-item svg { width: 18px; height: 18px; flex: none; }
+.idea-act-item svg { width: 18px; height: 18px; flex: none; }
 
-.idea-share-item:hover,
-.idea-share-item:focus-visible {
+.idea-act-item:hover,
+.idea-act-item:focus-visible {
   background-color: rgba(var(--accent-rgb), 0.08);
   color: var(--accent);
   outline: none;
 }
 
-.idea-share-item.copied { color: #22c55e; }
+.idea-act-item.copied { color: #22c55e; }
 
 .idea-h2 { font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; }
 .idea-body > .idea-h2:first-child { margin-top: 0; }
@@ -2215,6 +2214,8 @@ body.lb-open { overflow: hidden; }
   @media (prefers-reduced-motion: reduce) {
     .navbar-links, .navbar-links a, .navbar-links a::before {
       transition: none; animation: none; opacity: 1; transform: none;
+    }
+  }
 
   .navbar-links a:hover,
   .navbar-links a.active {
@@ -2223,4 +2224,51 @@ body.lb-open { overflow: hidden; }
 
   /* وقتی منو بازه، اسکرول پشت صفحه قفل بشه */
   body.menu-open { overflow: hidden; }
+}
+
+/* ==========================================================================
+   ICON BADGE — آیکون کارت‌ها (صفحات About و Skills)
+   ========================================================================== */
+.ico-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  box-shadow: inset 0 1px 0 rgba(var(--accent-rgb), 0.12);
+  transition: transform 0.35s var(--ease), background-color 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+
+.ico-badge svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.ico-badge.ico-lg {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+
+.ico-badge.ico-lg svg {
+  width: 28px;
+  height: 28px;
+}
+
+.path-card:hover .ico-badge,
+.expertise-card:hover .ico-badge {
+  transform: translateY(-2px) scale(1.05);
+  background: rgba(var(--accent-rgb), 0.16);
+  border-color: rgba(var(--accent-rgb), 0.4);
+}
+
+[data-theme="light"] .ico-badge {
+  color: var(--accent-start);
+  background: rgba(var(--accent-rgb), 0.12);
 }
