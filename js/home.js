@@ -7,6 +7,7 @@ function renderFeaturedProjects() {
 
   const lang = document.documentElement.getAttribute("lang") || "en";
   const featured = projects.slice(0, 2); // ۲ پروژه اول به‌عنوان منتخب
+  const viewText = translations[lang].home.viewProject;
 
   container.innerHTML = featured.map(p => `
     <div class="project-card">
@@ -18,7 +19,7 @@ function renderFeaturedProjects() {
       <div class="project-links">
         ${p.github ? `<a href="${p.github}" target="_blank">GitHub</a>` : ""}
         ${p.demo ? `<a href="${p.demo}" ${/\.zip($|\?)/i.test(p.demo) ? "download" : 'target="_blank"'}>Demo</a>` : ""}
-        <a href="project.html?id=${p.id}" data-i18n="home.viewProject">View Details</a>
+        <a href="project.html?id=${p.id}" class="btn btn-primary btn-sm"><span>${viewText}</span><span class="btn-ico" data-icon="arrow-right" aria-hidden="true">${iconSvg("arrow-right")}</span></a>
       </div>
     </div>
   `).join("");

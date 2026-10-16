@@ -27,7 +27,7 @@ function renderProjectsPage() {
             ${shown.map(t => `<span class="tech-tag">${esc(t)}</span>`).join("")}
             ${extra > 0 ? `<span class="tech-tag">+${extra}</span>` : ""}
           </div>
-          <span class="pcard-link">${ui.view}</span>
+          <div class="card-cta-row"><span class="card-cta"><span>${ui.view}</span><span class="btn-ico" data-icon="arrow-right" aria-hidden="true">${iconSvg("arrow-right")}</span></span></div>
         </div>
       </a>`;
   }).join("");

@@ -6,7 +6,6 @@ function renderIdeasPage() {
   if (!list) return;
 
   const lang = document.documentElement.getAttribute("lang") || "en";
-  const rtl = document.documentElement.getAttribute("dir") === "rtl";
   const ui = ideasUI[lang];
 
   document.getElementById("id-title").textContent = ui.pageTitle;
@@ -21,8 +20,8 @@ function renderIdeasPage() {
       <div class="idea-info">
         <h3>${esc(idea.title[lang])}</h3>
         <p>${esc(idea.description[lang])}</p>
+        <span class="card-cta idea-cta"><span>${ui.readMore}</span><span class="btn-ico" data-icon="arrow-right" aria-hidden="true">${iconSvg("arrow-right")}</span></span>
       </div>
-      <span class="idea-arrow">${rtl ? "←" : "→"}</span>
     </a>`).join("");
 }
 

@@ -13,7 +13,6 @@ function renderContactPage() {
   if (!list) return;
 
   const lang = document.documentElement.getAttribute("lang") || "en";
-  const rtl = document.documentElement.getAttribute("dir") === "rtl";
   const ui = contactUI[lang];
 
   document.getElementById("ct-title").textContent = ui.title;
@@ -26,7 +25,7 @@ function renderContactPage() {
         <span class="contact-label">${esc(item.label[lang])}</span>
         <span class="contact-value">${esc(item.value)}</span>
       </span>
-      <span class="contact-arrow">${rtl ? "←" : "→"}</span>
+      <span class="contact-arrow" data-icon="arrow-right">${iconSvg("arrow-right")}</span>
     </a>`).join("");
 }
 

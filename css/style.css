@@ -2272,3 +2272,106 @@ body.lb-open { overflow: hidden; }
   color: var(--accent-start);
   background: rgba(var(--accent-rgb), 0.12);
 }
+
+/* ==========================================================================
+   ICONS — صفحات Home و Contact
+   ========================================================================== */
+/* آیکون داخل دکمه‌ها */
+.btn-ico {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+.btn-ico svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  transition: transform 0.3s var(--ease);
+}
+.btn:hover .btn-ico[data-icon="arrow-right"] svg { transform: translateX(3px); }
+[dir="rtl"] .btn:hover .btn-ico[data-icon="arrow-right"] svg { transform: scaleX(-1) translateX(3px); }
+
+/* فلش‌ها در حالت راست‌به‌چپ برعکس میشن */
+[dir="rtl"] [data-icon="arrow-right"] svg { transform: scaleX(-1); }
+
+/* چیپ‌های مهارت با آیکون */
+.skill-chip.has-ico {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.chip-ico {
+  display: inline-flex;
+  color: var(--accent);
+}
+.chip-ico svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+/* آیکون بالای عنوان بخش CTA و هدر صفحه تماس */
+.cta-inner > .ico-badge,
+.contact-head .ico-badge {
+  margin-bottom: 18px;
+}
+
+/* فلش ردیف‌های تماس */
+.contact-arrow {
+  display: inline-flex;
+  align-items: center;
+}
+.contact-arrow svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* ==========================================================================
+   CARD CTA — دکمه ورود به جزئیات (کارت‌های Projects و Ideas و Home)
+   ========================================================================== */
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--accent-gradient);
+  color: #031018;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow:
+    0 8px 22px -8px rgba(var(--blue-rgb), 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), filter 0.3s var(--ease);
+}
+.card-cta .btn-ico svg { width: 18px; height: 18px; }
+
+.pcard:hover .card-cta,
+.idea-row:hover .card-cta {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow:
+    0 14px 30px -8px rgba(var(--blue-rgb), 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+.pcard:hover .card-cta .btn-ico svg,
+.idea-row:hover .card-cta .btn-ico svg { transform: translateX(4px); }
+[dir="rtl"] .pcard:hover .card-cta .btn-ico svg,
+[dir="rtl"] .idea-row:hover .card-cta .btn-ico svg { transform: scaleX(-1) translateX(4px); }
+
+/* کارت پروژه: دکمه پایین کارت، با فاصله از تگ‌ها */
+.card-cta-row { margin-top: auto; padding-top: 22px; }
+
+/* کارت ایده: دکمه زیر توضیح */
+.idea-cta { margin-top: 14px; padding: 8px 18px; font-size: 0.86rem; }
+
+/* کارت پروژه‌های منتخب در Home: دکمه جزئیات */
+.btn.btn-sm { padding: 9px 20px; font-size: 0.88rem; }
+.project-links { align-items: center; flex-wrap: wrap; }
+.project-links a.btn-primary { color: #031018; }
+.project-links a.btn-primary:hover { opacity: 1; text-decoration: none; }
+
+/* کارت‌های Home: دکمه جزئیات هم‌تراز پایین کارت */
+.projects-grid > .project-card:not(.pcard) { display: flex; flex-direction: column; }
+.projects-grid > .project-card:not(.pcard) .project-links { margin-top: auto; padding-top: 8px; }
