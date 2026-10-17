@@ -264,7 +264,7 @@ async function initCover(p) {
   try {
     const res = await fetch(animPath, { method: "HEAD" });
     if (!res.ok) throw new Error("no animation");
-    box.innerHTML = `<iframe src="${esc(animPath)}" title="${esc(p.name)}" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>`;
+    box.innerHTML = `<iframe src="${esc(animPath)}" title="${esc(p.name)}" sandbox="allow-scripts allow-same-origin"></iframe>`;
   } catch (e) {
     showImage();
   }
