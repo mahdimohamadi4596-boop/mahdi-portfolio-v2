@@ -1,6 +1,5 @@
-
 ---
 deployment:
   tasks:
     - export DEPLOYPATH=/home/mahdimoh/public_html/
-    - /bin/cp -R . $DEPLOYPATH
+    - /bin/cp -R index.html about.html projects.html project.html skills.html contact.html ideas.html idea.html 404.html css js assets data $DEPLOYPATH/
