@@ -1752,12 +1752,12 @@ body.lb-open { overflow: hidden; }
 .idea-article { position: relative; }
 .idea-share {
   position: absolute;
-  top: 33px;
+  top: 19px;
   inset-inline-end: 32px;
   z-index: 5;
 }
-.idea-share-btn { padding: 10px 20px; font-size: 0.9rem; }
-.idea-share-btn svg { width: 18px; height: 18px; }
+.idea-share-btn { padding: 7px 14px; font-size: 0.82rem; }
+.idea-share-btn svg { width: 16px; height: 16px; }
 
 .idea-share-menu {
   position: absolute;
@@ -1912,6 +1912,8 @@ body.lb-open { overflow: hidden; }
 /* صفحه جزئیات Idea داخل همون کادر شیشه‌ای مشترک با Project Details */
 .idea-article .pd-hero,
 .idea-article .pd-section { padding-left: 0; padding-right: 0; }
+/* لینک برگشت + دکمه Share بالاتر بیان */
+.idea-article .pd-hero { padding-top: 16px; }
 /* ==========================================================================
    CONTACT PAGE — لیست مینیمال راه‌های ارتباطی
    ========================================================================== */
