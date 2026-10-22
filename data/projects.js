@@ -49,6 +49,91 @@ const projects = [
 
 
   {
+    id: "python-ai-coding-mentor",
+    name: "Python AI Coding Mentor",
+    description: {
+      en: "A lightweight AI coding agent designed to help Python learners understand code, execute programs, analyze errors, and improve their coding skills.",
+      fa: "یک ایجنت هوش مصنوعی سبک برای کمک به یادگیری پایتون، درک کدها، اجرای برنامه‌ها، تحلیل خطاها و بهبود مهارت‌های برنامه‌نویسی."
+    },
+    cover: "assets/images/projects/ai-coding-mentor/python-ai-coding-mentor.png",
+    overview: {
+      en: "Python AI Coding Mentor is an AI-powered coding agent that assists Python learners through practical interaction with code and project files. It can inspect files, read and write code with permission, execute Python programs, run tests, analyze errors, and attempt to repair code while preserving original files for recovery.",
+      fa: "Python AI Coding Mentor یک ایجنت هوش مصنوعی برای کمک به یادگیری پایتون از طریق تعامل عملی با کدها و فایل‌های پروژه است. این ایجنت می‌تواند فایل‌ها را بررسی کند، با تأیید کاربر کد بنویسد یا تغییر دهد، برنامه‌های پایتون را اجرا کند، تست‌ها را انجام دهد، خطاها را تحلیل کند و برای اصلاح کد تلاش کند؛ در حالی که امکان بازیابی فایل‌های اصلی نیز در نظر گرفته شده است."
+    },
+    problem: {
+      en: "Python learners often struggle to understand runtime errors, debug programs, navigate project files, and apply corrections safely. General-purpose AI chatbots can suggest code, but they do not always provide a structured workflow for interacting with real files, executing programs, validating results, and recovering from unsuccessful changes.",
+      fa: "یادگیرندگان پایتون اغلب در درک خطاهای زمان اجرا، دیباگ برنامه‌ها، مدیریت فایل‌های پروژه و اعمال ایمن تغییرات با مشکل مواجه می‌شوند. چت‌بات‌های عمومی می‌توانند کد پیشنهاد دهند، اما همیشه فرایندی ساختاریافته برای کار با فایل‌های واقعی، اجرای برنامه، اعتبارسنجی نتایج و بازیابی تغییرات ناموفق ارائه نمی‌کنند."
+    },
+    solution: {
+      en: "The project combines an LLM with a controlled tool-calling workflow that allows the agent to inspect project files, read and write code, execute Python programs, run tests, and analyze execution errors. Structured tool validation, user approval for file modifications, bounded repair attempts, and file restoration help make the workflow more controlled and reliable.",
+      fa: "این پروژه یک مدل زبانی را با گردش کاری مبتنی بر فراخوانی ابزارها ترکیب می‌کند تا ایجنت بتواند فایل‌های پروژه را بررسی کند، کد بخواند و بنویسد، برنامه‌های پایتون را اجرا کند، تست بگیرد و خطاهای اجرا را تحلیل کند. اعتبارسنجی ساختاریافته ابزارها، دریافت تأیید کاربر برای تغییر فایل‌ها، محدودکردن دفعات تلاش برای تعمیر و امکان بازیابی فایل‌ها به کنترل‌پذیری و قابلیت اطمینان فرایند کمک می‌کنند."
+    },
+    features: {
+      en: [
+        "AI-powered Python coding assistance",
+        "Project file listing and reading",
+        "Controlled file writing with user approval",
+        "Python code execution and test running",
+        "Execution error analysis and automated repair attempts",
+        "Bounded repair loop with original-file restoration",
+        "Structured JSON and schema validation for tool calls",
+        "Conversation context and lightweight memory",
+        "OpenAI-compatible API configuration",
+        "Command-line interface with help and conversation controls"
+      ],
+      fa: [
+        "دستیار هوش مصنوعی برای کدنویسی پایتون",
+        "نمایش فهرست فایل‌ها و خواندن محتوای آن‌ها",
+        "نوشتن و تغییر کنترل‌شده فایل‌ها با تأیید کاربر",
+        "اجرای کد پایتون و انجام تست‌ها",
+        "تحلیل خطاهای اجرا و تلاش برای تعمیر خودکار کد",
+        "چرخه تعمیر محدود همراه با امکان بازیابی فایل‌های اصلی",
+        "اعتبارسنجی ساختار JSON و نوع داده‌های فراخوانی ابزارها",
+        "حفظ زمینه گفتگو و حافظه سبک",
+        "پیکربندی APIهای سازگار با رابط OpenAI",
+        "رابط خط فرمان همراه با راهنما و مدیریت گفتگو"
+      ]
+    },
+    tech: [
+      "Python",
+      "LLM",
+      "OpenAI-Compatible API",
+      "Tool Calling",
+      "JSON",
+      "CLI",
+      "Automated Debugging",
+      "File System Operations"
+    ],
+    architecture: {
+      en: [
+        "User submits a coding request through the CLI",
+        "The LLM interprets the request and determines the required actions",
+        "The agent validates tool calls and applies execution policies",
+        "Approved tools inspect files, modify code, run Python, or execute tests",
+        "Execution results and errors are returned to the agent",
+        "The agent analyzes feedback and may attempt a bounded code repair",
+        "Original files can be restored if the repair process fails",
+        "The agent returns the result to the user"
+      ],
+      fa: [
+        "کاربر درخواست برنامه‌نویسی را از طریق خط فرمان ارسال می‌کند",
+        "مدل زبانی درخواست را تحلیل کرده و اقدامات موردنیاز را مشخص می‌کند",
+        "ایجنت فراخوانی ابزارها را اعتبارسنجی کرده و سیاست‌های اجرایی را اعمال می‌کند",
+        "ابزارهای مجاز فایل‌ها را بررسی می‌کنند، کد را تغییر می‌دهند یا برنامه و تست‌ها را اجرا می‌کنند",
+        "نتایج اجرا و خطاها به ایجنت بازگردانده می‌شوند",
+        "ایجنت بازخورد را تحلیل کرده و در صورت نیاز برای اصلاح کد تلاش می‌کند",
+        "در صورت شکست فرایند تعمیر، امکان بازیابی فایل‌های اصلی وجود دارد",
+        "ایجنت نتیجه را به کاربر ارائه می‌دهد"
+      ]
+    },
+    gallery: [],
+    github: "https://github.com/mahdimohamadi4596-boop/Ai-Mentor-v.1",
+    demo: "https://github.com/mahdimohamadi4596-boop/Ai-Mentor-v.1/releases/download/v1.0.0/python-ai-coding-mentor-v-1-0.zip"
+  },
+
+
+
+  {
     id: "ai-file-agent",
     name: "AI File Management Agent",
     description: {
