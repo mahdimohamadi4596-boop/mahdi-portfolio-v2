@@ -1,0 +1,553 @@
+/* ==========================================================================
+   HALLOWEEN THEME v2 — موقتی
+   - رنگ‌ها (متغیرهای CSS) + جلوه‌های تزئینی + مینی‌بازی «شکار روح»
+   - برای حذف: خط <script src="js/halloween.js"> از صفحه‌ها + این فایل + js/halloween.js
+   - بعد از ۲ نوامبر ۲۰۲۶ خودش به‌صورت خودکار خاموش میشه
+   ========================================================================== */
+
+/* ---------- ۱) پالت: نارنجی کدو ← بنفش شبانه ---------- */
+html.halloween,
+html.halloween[data-theme="dark"] {
+  --bg-primary: #0A0610;
+  --bg-secondary: #130A1E;
+  --bg-card-rgb: 28, 16, 42;
+
+  --text-primary: #FBF5FF;
+  --text-secondary: #B9A9CC;
+  --text-muted: #9886AE;
+
+  --accent-start: #FF7A18;
+  --accent-end: #A855F7;
+  --accent: #FFA24C;
+  --accent-rgb: 255, 140, 40;
+  --blue-rgb: 168, 85, 247;
+  --cyan-rgb: 255, 122, 24;
+  --tag-text: #FFC27A;
+
+  --border-color: rgba(255, 170, 110, 0.12);
+  --border-strong: rgba(255, 140, 40, 0.34);
+  --glass-bg: rgba(10, 6, 16, 0.66);
+  --card-highlight: rgba(255, 220, 190, 0.05);
+
+  --dot-color: rgba(255, 170, 100, 0.20);
+  --glow-blue: rgba(168, 85, 247, 0.20);
+  --glow-cyan: rgba(255, 122, 24, 0.15);
+
+  --hw-ink: #2d1848;
+  --hw-edge: rgba(255, 150, 60, 0.55);
+  --hw-web: rgba(235, 220, 255, 0.34);
+}
+
+html.halloween[data-theme="light"] {
+  --bg-primary: #FFF6EC;
+  --bg-secondary: #FDEBD8;
+
+  --text-primary: #2A1238;
+  --text-secondary: #5E4570;
+  --text-muted: #7A6390;
+
+  --accent-start: #EA580C;
+  --accent-end: #7C3AED;
+  --accent: #C2410C;
+  --accent-rgb: 194, 65, 12;
+  --blue-rgb: 124, 58, 237;
+  --cyan-rgb: 234, 88, 12;
+  --tag-text: #C2410C;
+
+  --border-color: rgba(42, 18, 56, 0.10);
+  --border-strong: rgba(234, 88, 12, 0.38);
+  --glass-bg: rgba(255, 248, 238, 0.74);
+  --shadow: 0 20px 40px -24px rgba(124, 58, 237, 0.28);
+
+  --dot-color: rgba(234, 88, 12, 0.16);
+  --glow-blue: rgba(124, 58, 237, 0.11);
+  --glow-cyan: rgba(234, 88, 12, 0.12);
+
+  --hw-ink: #2a1238;
+  --hw-edge: rgba(0, 0, 0, 0);
+  --hw-web: rgba(42, 18, 56, 0.30);
+}
+
+/* ---------- ۲) بدنه‌ی سایت: درخشش‌های موضعی ---------- */
+html.halloween { scrollbar-color: #FF7A18 #130A1E; }
+html.halloween[data-theme="light"] { scrollbar-color: #EA580C #FDEBD8; }
+html.halloween #particles { display: none !important; }   /* ذرات آبی با جرقه‌های نارنجی جایگزین میشن */
+
+html.halloween .navbar {
+  border-bottom-color: rgba(255, 140, 40, 0.30);
+  box-shadow: 0 8px 34px -14px rgba(255, 100, 20, 0.40);
+}
+
+html.halloween .hero-title,
+html.halloween .hero-name {
+  filter: drop-shadow(0 0 22px rgba(255, 122, 24, 0.30));
+  animation: hw-title 5s ease-in-out infinite alternate;
+}
+
+html.halloween .project-card:hover,
+html.halloween .path-card:hover,
+html.halloween .goal-card:hover,
+html.halloween .timeline-card:hover {
+  border-color: rgba(255, 140, 40, 0.50);
+  box-shadow:
+    0 0 0 1px rgba(255, 140, 40, 0.22),
+    0 22px 54px -20px rgba(255, 100, 20, 0.50),
+    0 0 44px -12px rgba(168, 85, 247, 0.50);
+}
+
+/* ---------- ۳) لایه‌ی تزئینات ---------- */
+#hw-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 900;              /* زیر navbar (1000) */
+  pointer-events: none;
+  overflow: hidden;
+  direction: ltr;
+}
+
+/* ماه با دهانه‌ها، پشت محتوا، با پارالاکس اسکرول */
+.hw-moon {
+  position: fixed;
+  top: 96px;
+  right: 7%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 64% 28%, rgba(190, 90, 20, 0.40) 0 7%, transparent 8%),
+    radial-gradient(circle at 30% 62%, rgba(190, 90, 20, 0.32) 0 10%, transparent 11%),
+    radial-gradient(circle at 58% 74%, rgba(190, 90, 20, 0.28) 0 6%, transparent 7%),
+    radial-gradient(circle at 35% 35%, #FFE9C4, #FFB347 58%, #FF7A18);
+  box-shadow: 0 0 100px 40px rgba(255, 140, 40, 0.28);
+  opacity: 0.22;
+  transform: translateY(var(--hw-py, 0px));
+  animation: hw-moon 9s ease-in-out infinite alternate;
+}
+html.halloween[data-theme="light"] .hw-moon { opacity: 0.12; }
+
+/* مه دو لایه */
+.hw-fog {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: 0;
+  height: 34vh;
+  background:
+    radial-gradient(ellipse 45% 70% at 22% 100%, rgba(168, 85, 247, 0.20), transparent 70%),
+    radial-gradient(ellipse 40% 60% at 78% 100%, rgba(255, 122, 24, 0.14), transparent 70%);
+  animation: hw-fog 16s ease-in-out infinite alternate;
+}
+.hw-fog.b {
+  height: 22vh;
+  opacity: 0.8;
+  background:
+    radial-gradient(ellipse 38% 70% at 60% 100%, rgba(255, 122, 24, 0.13), transparent 70%),
+    radial-gradient(ellipse 36% 60% at 10% 100%, rgba(168, 85, 247, 0.14), transparent 70%);
+  animation-duration: 22s;
+  animation-direction: alternate-reverse;
+}
+html.halloween[data-theme="light"] .hw-fog { opacity: 0.5; }
+
+/* جرقه‌های رو به بالا */
+.hw-ember {
+  position: absolute;
+  bottom: -12px;
+  width: var(--s, 4px);
+  height: var(--s, 4px);
+  border-radius: 50%;
+  background: #FFB347;
+  box-shadow: 0 0 8px 2px rgba(255, 140, 40, 0.7);
+  opacity: 0;
+  animation: hw-ember var(--d, 14s) linear var(--delay, 0s) infinite;
+}
+
+/* ---------- ۴) چکه‌ی لزج زیر navbar ---------- */
+.hw-drip {
+  position: fixed;
+  top: calc(var(--hw-nav, 68px) - 1px);
+  left: 0;
+  right: 0;
+  height: 36px;
+  z-index: 899;
+  pointer-events: none;
+  background-repeat: repeat-x;
+  background-size: 200px 36px;
+  background-position: 0 0;
+  opacity: 0.92;
+  filter: drop-shadow(0 4px 10px rgba(255, 110, 20, 0.45));
+}
+.hw-dropl {
+  position: fixed;
+  top: calc(var(--hw-nav, 68px) + 24px);
+  z-index: 899;
+  width: 7px;
+  height: 9px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: linear-gradient(#FF7A18, #C26BFF);
+  box-shadow: 0 0 10px rgba(255, 110, 20, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  animation: hw-dropl var(--d, 6s) ease-in var(--delay, 0s) infinite;
+}
+
+/* ---------- ۵) تار عنکبوت گوشه‌ی بالا-چپ ---------- */
+.hw-web {
+  position: fixed;
+  top: var(--hw-nav, 68px);
+  left: 0;
+  width: 150px;
+  height: 150px;
+  z-index: 898;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--hw-web);
+  stroke-width: 1;
+  stroke-linecap: round;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 3px rgba(200, 170, 255, 0.35));
+}
+html.halloween[data-theme="light"] .hw-web { filter: none; }
+
+/* ---------- ۶) خفاش‌ها ---------- */
+.hw-bat-wrap {
+  position: absolute;
+  top: var(--top, 20vh);
+  left: 0;
+  width: var(--w, 36px);
+  animation: hw-fly var(--dur, 26s) linear var(--delay, 0s) infinite;
+  will-change: transform;
+}
+.hw-bat-wrap.rev { animation-name: hw-fly-rev; }
+
+.hw-bat {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: var(--hw-ink);
+  stroke: var(--hw-edge);
+  stroke-width: 1;
+  filter: drop-shadow(0 0 5px rgba(255, 130, 40, 0.38));
+  animation: hw-bob 2.6s ease-in-out infinite alternate;
+}
+.hw-wing { transform-box: view-box; transform-origin: 32px 16px; }
+.hw-wing-l { animation: hw-flap-l 0.32s ease-in-out infinite alternate; }
+.hw-wing-r { animation: hw-flap-r 0.32s ease-in-out infinite alternate; }
+
+/* ---------- ۷) چشم‌های درخشان در تاریکی ---------- */
+.hw-eyes {
+  position: absolute;
+  display: flex;
+  gap: 9px;
+  opacity: 0;
+  animation: hw-eyes var(--d, 16s) ease-in-out var(--delay, 0s) infinite;
+}
+.hw-eyes i {
+  display: block;
+  width: 9px;
+  height: 5px;
+  border-radius: 50%;
+  background: #FF5A1F;
+  box-shadow: 0 0 9px 3px rgba(255, 90, 31, 0.75);
+}
+.hw-eyes i:first-child { transform: rotate(-12deg); }
+.hw-eyes i:last-child  { transform: rotate(12deg); }
+html.halloween[data-theme="light"] .hw-eyes { display: none; }
+
+/* ---------- ۸) عنکبوت آویزان از navbar ---------- */
+.hw-spider {
+  position: fixed;
+  top: var(--hw-nav, 68px);
+  right: 6%;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  animation: hw-sway 4.5s ease-in-out infinite alternate;
+}
+.hw-thread {
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(220, 200, 255, 0.6));
+  animation: hw-drop 10s ease-in-out infinite;
+}
+.hw-spider svg {
+  width: 26px;
+  height: 26px;
+  margin-top: -2px;
+  fill: var(--hw-ink);
+  stroke: rgba(255, 150, 60, 0.7);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(255, 130, 40, 0.38));
+}
+html.halloween[data-theme="light"] .hw-spider svg { stroke: rgba(0, 0, 0, 0); }
+html.halloween[data-theme="light"] .hw-thread {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(42, 18, 56, 0.5));
+}
+
+/* ---------- ۹) رعد و برق (یک درخشش نرم، نه چشمک‌زن) ---------- */
+.hw-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 899;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 82% 8%, rgba(214, 190, 255, 0.34), rgba(255, 140, 60, 0.07) 55%, transparent 80%);
+}
+html.halloween[data-theme="light"] .hw-flash { display: none; }
+
+/* ---------- ۱۰) نور و دنباله‌ی جرقه دنبال موس ---------- */
+.hw-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 280px;
+  margin: -140px 0 0 -140px;
+  z-index: 897;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 130, 40, 0.15), rgba(168, 85, 247, 0.05) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+.hw-cursor.on { opacity: 1; }
+html.halloween[data-theme="light"] .hw-cursor { display: none; }
+
+.hw-spark {
+  position: fixed;
+  z-index: 2000;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------- ۱۱) کدوی چراغ‌دار + شمارنده + حباب ---------- */
+.hw-pumpkin {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 900;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  animation: hw-float 3.6s ease-in-out infinite alternate;
+  -webkit-tap-highlight-color: transparent;
+}
+.hw-pumpkin::before {          /* نور شمع روی زمین */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 190px;
+  height: 190px;
+  margin: -95px 0 0 -95px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 150, 40, 0.30), transparent 68%);
+  animation: hw-glow 2.4s steps(1, end) infinite;
+  pointer-events: none;
+}
+.hw-pumpkin svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(255, 140, 40, 0.65));
+  transition: transform 0.2s var(--ease, ease);
+}
+.hw-pumpkin:hover svg { transform: scale(1.1) rotate(-4deg); }
+.hw-pumpkin:active svg { transform: scale(0.94); }
+.hw-face { animation: hw-face 2.4s steps(1, end) infinite; }
+
+.hw-badge {
+  position: fixed;
+  left: 82px;
+  bottom: 30px;
+  z-index: 900;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  background: rgba(var(--bg-card-rgb), 0.72);
+  border: 1px solid rgba(255, 140, 40, 0.40);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 22px -10px rgba(255, 110, 20, 0.6);
+  pointer-events: none;
+  white-space: nowrap;
+  direction: ltr;
+  transition: transform 0.25s ease;
+}
+.hw-badge.pop { transform: scale(1.22); }
+.hw-badge.done { border-color: #FFD84D; color: #FFD84D; }
+
+.hw-bubble {
+  position: fixed;
+  left: 16px;
+  bottom: 84px;
+  z-index: 900;
+  padding: 8px 14px;
+  border-radius: 14px 14px 14px 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  box-shadow: 0 10px 28px -10px rgba(255, 122, 24, 0.7);
+  opacity: 0;
+  transform: translateY(8px) scale(0.9);
+  transform-origin: bottom left;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hw-bubble.show { opacity: 1; transform: none; }
+
+.hw-burst {
+  position: fixed;
+  z-index: 900;
+  width: 28px;
+  pointer-events: none;
+}
+
+/* ---------- ۱۲) روح‌ها (مینی‌بازی) ---------- */
+.hw-ghost {
+  position: absolute;
+  left: 0;
+  width: var(--w, 56px);
+  height: var(--w, 56px);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+}
+.hw-ghost-in {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: hw-ghostbob 1.8s ease-in-out infinite alternate;
+}
+.hw-ghost svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0.82;
+  filter: drop-shadow(0 0 12px rgba(214, 190, 255, 0.75));
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hw-ghost.flip svg { transform: scaleX(-1); }
+.hw-ghost:hover svg { opacity: 1; }
+
+/* پیروزی */
+.hw-rain {
+  position: fixed;
+  top: -60px;
+  z-index: 2000;
+  pointer-events: none;
+  line-height: 1;
+  will-change: transform;
+}
+.hw-win {
+  position: fixed;
+  left: 50%;
+  top: 38%;
+  z-index: 2100;
+  padding: 22px 34px;
+  text-align: center;
+  border-radius: 22px;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(255, 122, 24, 0.94), rgba(168, 85, 247, 0.94));
+  box-shadow: 0 30px 80px -20px rgba(255, 110, 20, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(.2, 1.4, .4, 1);
+  max-width: 88vw;
+}
+.hw-win.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.hw-win b { display: block; font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
+.hw-win span { font-size: 0.95rem; opacity: 0.92; }
+
+/* ---------- ۱۳) انیمیشن‌ها ---------- */
+@keyframes hw-fly      { from { transform: translateX(-12vw); } to { transform: translateX(112vw); } }
+@keyframes hw-fly-rev  { from { transform: translateX(112vw) scaleX(-1); } to { transform: translateX(-12vw) scaleX(-1); } }
+@keyframes hw-bob      { from { transform: translateY(-14px); } to { transform: translateY(14px); } }
+@keyframes hw-flap-l   { from { transform: rotate(14deg); } to { transform: rotate(-26deg); } }
+@keyframes hw-flap-r   { from { transform: rotate(-14deg); } to { transform: rotate(26deg); } }
+@keyframes hw-sway     { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+@keyframes hw-drop     { 0%, 100% { height: 46px; } 50% { height: 120px; } }
+@keyframes hw-float    { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+@keyframes hw-glow {
+  0%, 100% { opacity: 1; } 18% { opacity: 0.6; } 34% { opacity: 1; } 57% { opacity: 0.72; } 80% { opacity: 0.95; }
+}
+@keyframes hw-face {
+  0%, 100% { opacity: 1; } 18% { opacity: 0.8; } 34% { opacity: 1; } 57% { opacity: 0.88; } 80% { opacity: 0.97; }
+}
+@keyframes hw-ember {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  10%  { opacity: 0.9; }
+  100% { transform: translate(var(--x, 30px), -105vh); opacity: 0; }
+}
+@keyframes hw-fog      { from { transform: translateX(-4%); } to { transform: translateX(4%); } }
+@keyframes hw-moon     { from { opacity: 0.17; } to { opacity: 0.26; } }
+@keyframes hw-title {
+  from { filter: drop-shadow(0 0 14px rgba(255, 122, 24, 0.22)); }
+  to   { filter: drop-shadow(0 0 30px rgba(255, 122, 24, 0.42)); }
+}
+@keyframes hw-eyes {
+  0%, 62%   { opacity: 0; transform: scaleY(1); }
+  66%       { opacity: 0.95; transform: scaleY(1); }
+  74%       { opacity: 0.95; transform: scaleY(0.1); }
+  78%       { opacity: 0.95; transform: scaleY(1); }
+  90%       { opacity: 0.95; transform: scaleY(1); }
+  95%, 100% { opacity: 0; transform: scaleY(1); }
+}
+@keyframes hw-dropl {
+  0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+  12%  { opacity: 0.95; transform: translateY(0) scale(1); }
+  70%  { opacity: 0.8; }
+  100% { transform: translateY(120px) scale(0.8); opacity: 0; }
+}
+@keyframes hw-ghostbob {
+  from { transform: translateY(-12px) rotate(-3deg); }
+  to   { transform: translateY(12px) rotate(3deg); }
+}
+
+/* ---------- ۱۴) موبایل: کوچیک‌تر و سبک‌تر ---------- */
+@media (max-width: 768px) {
+  .hw-moon { width: 90px; height: 90px; top: 84px; right: 6%; box-shadow: 0 0 60px 24px rgba(255, 140, 40, 0.25); }
+  .hw-spider { right: 5%; }
+  .hw-spider svg { width: 22px; height: 22px; }
+  .hw-web { width: 96px; height: 96px; }
+  .hw-drip { background-size: 150px 27px; height: 27px; }
+  .hw-pumpkin { width: 50px; height: 50px; left: 12px; bottom: 12px; }
+  .hw-pumpkin::before { width: 150px; height: 150px; margin: -75px 0 0 -75px; }
+  .hw-badge { left: 68px; bottom: 22px; font-size: 0.74rem; padding: 4px 10px; }
+  .hw-bubble { left: 12px; bottom: 72px; font-size: 0.78rem; }
+  .hw-win { padding: 18px 24px; }
+  .hw-win b { font-size: 1.25rem; }
+}
+
+/* ---------- ۱۵) دسترس‌پذیری و چاپ ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hw-bat-wrap, .hw-ember, .hw-fog, .hw-eyes, .hw-dropl, .hw-flash, .hw-cursor, .hw-ghost { display: none !important; }
+  .hw-spider, .hw-thread, .hw-pumpkin, .hw-moon, .hw-face, .hw-pumpkin::before,
+  html.halloween .hero-title, html.halloween .hero-name { animation: none; }
+}
+@media print {
+  #hw-layer, .hw-moon, .hw-spider, .hw-pumpkin, .hw-bubble, .hw-badge, .hw-drip, .hw-dropl,
+  .hw-web, .hw-cursor, .hw-flash, .hw-ghost, .hw-win { display: none !important; }
+}
